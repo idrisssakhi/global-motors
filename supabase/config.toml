@@ -1,0 +1,7 @@
+# Supabase project config (used by the Supabase CLI).
+# Link to the cloud project with:
+#   npx supabase link --project-ref xnrzgkogakczrcbjnkje
+project_id = "global-motors"
+
+[db]
+major_version = 17

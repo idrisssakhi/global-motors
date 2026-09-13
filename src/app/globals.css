@@ -1,0 +1,426 @@
+@import 'tailwindcss';
+
+/* ──────────────────────────────────────────────────────────────
+   SKH Global Motors — design tokens
+   Night showroom: near-black canvas, graphite surfaces, champagne gold.
+   ────────────────────────────────────────────────────────────── */
+@theme {
+  --color-canvas: #07080b;
+  --color-surface: #0f1117;
+  --color-surface-2: #151821;
+  --color-ink: #eceef3;
+  --color-muted: #969eac;
+  --color-line: #1f2430;
+
+  --color-primary: #ffffff;
+  --color-primary-600: #d7dbe3;
+  --color-primary-50: #171a23;
+
+  --color-accent: #d9a94e;
+  --color-accent-600: #c4923a;
+  --color-accent-50: #221c10;
+  --color-accent-soft: #f1d49a;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-sora), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: var(--font-cairo), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+
+  --shadow-card: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 20px 40px -24px rgb(0 0 0 / 0.8);
+  --shadow-card-hover: 0 1px 0 rgb(255 255 255 / 0.06) inset,
+    0 30px 60px -20px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(217 169 78 / 0.25);
+
+  --animate-marquee: gm-marquee 40s linear infinite;
+}
+
+html {
+  background-color: var(--color-canvas);
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+html[dir='rtl'] body,
+html[dir='rtl'] .font-display {
+  font-family: var(--font-arabic);
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-canvas);
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Component classes live in a cascade layer so Tailwind utilities
+   (ps-10, pe-12, …) can still override them. */
+@layer components {
+  /* Reusable container */
+  .container-x {
+    width: 100%;
+    max-width: 84rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-x {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Gold gradient text */
+  .text-gold {
+    background: linear-gradient(100deg, #f6e1b0 0%, #d9a94e 45%, #a8772a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Thin eyebrow label above section titles */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .eyebrow::before {
+    content: '';
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+  }
+  html[dir='rtl'] .eyebrow {
+    letter-spacing: 0;
+  }
+
+  /* Frosted glass panel */
+  .glass {
+    background: rgb(255 255 255 / 0.035);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  /* Buttons */
+  .btn-gold {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.9rem 1.6rem;
+    font-weight: 600;
+    color: var(--color-canvas);
+    background: linear-gradient(100deg, #f1d49a, #d9a94e 55%, #c4923a);
+    box-shadow: 0 10px 30px -10px rgb(217 169 78 / 0.55);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  }
+  .btn-gold:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.06);
+    box-shadow: 0 16px 40px -12px rgb(217 169 78 / 0.7);
+  }
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.9rem 1.6rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    border: 1px solid rgb(255 255 255 / 0.16);
+    background: rgb(255 255 255 / 0.03);
+    transition: background 0.25s ease, border-color 0.25s ease;
+  }
+  .btn-ghost:hover {
+    background: rgb(255 255 255 / 0.08);
+    border-color: rgb(255 255 255 / 0.3);
+  }
+
+  /* Form fields on dark */
+  .field {
+    width: 100%;
+    border-radius: 0.85rem;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface-2);
+    padding: 0.75rem 1rem;
+    font-size: 0.925rem;
+    color: var(--color-ink);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .field::placeholder {
+    color: rgb(150 158 172 / 0.7);
+  }
+  .field:focus {
+    border-color: rgb(217 169 78 / 0.7);
+    box-shadow: 0 0 0 3px rgb(217 169 78 / 0.15);
+  }
+  select.field {
+    cursor: pointer;
+  }
+
+  /* Film grain overlay */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Subtle technical grid background */
+  .bg-grid {
+    background-image: linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Animations — CSS for above-the-fold (no hydration wait).
+   ────────────────────────────────────────────────────────────── */
+@keyframes gm-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes gm-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes gm-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes gm-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+@keyframes gm-scroll-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes gm-pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.animate-fade-up {
+  animation: gm-fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-fade {
+  animation: gm-fade 1.2s ease both;
+}
+.animate-scroll-dot {
+  animation: gm-scroll-dot 1.8s ease-in-out infinite;
+}
+.animate-pulse-ring {
+  animation: gm-pulse-ring 2s ease-out infinite;
+}
+.skeleton-shimmer {
+  background-image: linear-gradient(90deg, #11141b 25%, #1a1e28 37%, #11141b 63%);
+  background-size: 200% 100%;
+  animation: gm-shimmer 1.4s ease-in-out infinite;
+}
+html[dir='rtl'] .marquee-track {
+  animation-direction: reverse;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Hero car scene (SVG + CSS). Resting styles are the END state, and the
+   entrance keyframes only define `from` with backwards fill — so with
+   animations disabled everything is simply visible.
+   ────────────────────────────────────────────────────────────── */
+@keyframes gm-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+@keyframes gm-fill {
+  from {
+    fill-opacity: 0;
+  }
+}
+@keyframes gm-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes gm-road {
+  to {
+    background-position-x: -112px;
+  }
+}
+@keyframes gm-streak {
+  from {
+    transform: translateX(480%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+}
+@keyframes gm-bob {
+  to {
+    transform: translateY(1.5px);
+  }
+}
+@keyframes gm-beam {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+@keyframes gm-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+@keyframes gm-needle {
+  from {
+    transform: rotate(-70deg);
+  }
+  to {
+    transform: rotate(58deg);
+  }
+}
+@keyframes gm-route-dot {
+  from {
+    inset-inline-start: 0;
+  }
+  to {
+    inset-inline-start: calc(100% - 7px);
+  }
+}
+
+.hero-anim .gm-draw,
+.hero-anim .gm-draw path {
+  stroke-dasharray: 1;
+}
+.hero-anim .gm-draw {
+  animation: gm-draw 2.4s cubic-bezier(0.65, 0, 0.35, 1) 0.2s backwards;
+}
+.hero-anim .gm-draw.gm-fill {
+  animation: gm-draw 2.4s cubic-bezier(0.65, 0, 0.35, 1) 0.2s backwards,
+    gm-fill 1.2s ease 1.6s backwards;
+}
+.hero-anim .gm-fill {
+  animation: gm-fill 1.2s ease 1.8s backwards;
+}
+.hero-anim .gm-spin {
+  animation: gm-spin 0.5s linear infinite;
+}
+.hero-anim .gm-road-dashes {
+  background-image: repeating-linear-gradient(90deg, rgb(217 169 78 / 0.7) 0 48px, transparent 48px 112px);
+  animation: gm-road 0.45s linear infinite;
+}
+.hero-anim .gm-skyline {
+  animation: gm-marquee 38s linear infinite;
+}
+.hero-anim .gm-streak {
+  animation: gm-streak 1.3s linear infinite;
+}
+.hero-anim .gm-bob {
+  animation: gm-bob 0.35s ease-in-out infinite alternate;
+}
+.hero-anim .gm-beam,
+.hero-anim .gm-light {
+  animation: gm-beam 3s ease-in-out infinite;
+}
+.hero-anim .gm-float {
+  animation: gm-float 6s ease-in-out infinite;
+}
+.hero-anim .gm-needle {
+  animation: gm-needle 2.8s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+.hero-anim .gm-route-dot {
+  animation: gm-route-dot 3.5s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade,
+  .animate-scroll-dot,
+  .animate-pulse-ring,
+  .skeleton-shimmer,
+  .marquee-track,
+  .hero-anim,
+  .hero-anim * {
+    animation: none !important;
+  }
+}
