@@ -1,17 +1,13 @@
 import { Gauge, Ship } from 'lucide-react';
+import { GOLF } from './golfPaths';
 
 /**
- * Lightweight, CSS/SVG-only hero scene (no WebGL): a car drawn in gold
- * line-art drives along a road while the Paris → Marseille → Alger skyline
- * scrolls behind it. Everything is transform/opacity animation, so it runs
- * on the compositor and stops for prefers-reduced-motion (globals.css).
- * The scene mirrors in RTL so the car drives in the reading direction.
+ * Lightweight, CSS/SVG-only hero scene (no WebGL): a Volkswagen Golf VIII,
+ * traced from a real photo, is drawn in gold line-art and drives along a road
+ * while the Paris → Marseille → Alger skyline scrolls behind it. Everything is
+ * transform/opacity animation and stops for prefers-reduced-motion
+ * (globals.css). The scene mirrors in RTL so the car drives in reading order.
  */
-
-// Compact five-door hatchback profile: short roof, steep tailgate, long windscreen.
-const BODY =
-  'M40 160 L40 126 Q42 110 60 104 L112 66 Q122 58 140 57 L284 55 Q310 55 330 68 L430 106 Q520 112 556 122 Q574 128 574 146 L572 160 L520 160 A48 48 0 0 0 424 160 L188 160 A48 48 0 0 0 92 160 Z';
-const GLASS = 'M124 102 L150 72 Q156 66 168 66 L282 64 Q304 64 320 74 L400 104 Z';
 
 export function HeroAnimation({
   className,
@@ -23,13 +19,13 @@ export function HeroAnimation({
   return (
     <div className={className} aria-hidden>
       <div className="hero-anim absolute inset-0 overflow-hidden">
-        {/* Scene (mirrored in RTL) */}
+        {/* Scene (mirrored in RTL). Physical left/right on purpose. */}
         <div className="absolute inset-x-0 top-1/2 aspect-[16/10] -translate-y-1/2 rtl:-scale-x-100">
           {/* Warm horizon glow */}
-          <div className="absolute inset-x-[10%] bottom-[30%] h-[40%] rounded-full bg-accent/10 blur-3xl" />
+          <div className="absolute inset-x-[10%] bottom-[28%] h-[42%] rounded-full bg-accent/10 blur-3xl" />
 
           {/* Skyline: Paris → Marseille → Alger, looping */}
-          <div className="absolute inset-x-0 bottom-[36%] h-[26%] overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_18%,black_82%,transparent)]">
+          <div className="absolute inset-x-0 bottom-[38%] h-[26%] overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_18%,black_82%,transparent)]">
             <div className="gm-skyline flex h-full w-[200%]">
               <Skyline />
               <Skyline />
@@ -37,29 +33,29 @@ export function HeroAnimation({
           </div>
 
           {/* Road */}
-          <div className="absolute inset-x-0 bottom-[8%] h-[28%] [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
+          <div className="absolute inset-x-0 bottom-[6%] h-[30%] [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
             <div className="absolute inset-0 bg-linear-to-b from-white/[0.05] to-transparent" />
             <div className="absolute inset-x-0 top-0 h-px bg-white/15" />
-            <div className="gm-road-dashes absolute inset-x-0 top-[46%] h-[3px]" />
-            <div className="absolute inset-x-0 bottom-[18%] h-px bg-white/[0.06]" />
+            <div className="gm-road-dashes absolute inset-x-0 top-[50%] h-[3px]" />
+            <div className="absolute inset-x-0 bottom-[16%] h-px bg-white/[0.06]" />
           </div>
 
           {/* Speed streaks */}
           {[
-            ['top-[38%]', '0s', 'w-[22%]'],
-            ['top-[50%]', '0.45s', 'w-[30%]'],
-            ['top-[30%]', '0.9s', 'w-[16%]'],
-            ['top-[58%]', '0.25s', 'w-[26%]'],
+            ['top-[34%]', '0s', 'w-[22%]'],
+            ['top-[46%]', '0.45s', 'w-[30%]'],
+            ['top-[26%]', '0.9s', 'w-[16%]'],
+            ['top-[56%]', '0.25s', 'w-[26%]'],
           ].map(([top, delay, width]) => (
             <span
               key={top}
-              className={`gm-streak absolute start-0 h-px ${top} ${width} bg-linear-to-r from-transparent via-accent-soft/60 to-transparent`}
+              className={`gm-streak absolute left-0 h-px ${top} ${width} bg-linear-to-r from-transparent via-accent-soft/60 to-transparent`}
               style={{ animationDelay: delay }}
             />
           ))}
 
           {/* Car */}
-          <div className="absolute bottom-[19%] left-[11%] w-[78%]">
+          <div className="absolute bottom-[15%] left-[7%] w-[86%]">
             <div className="gm-bob">
               <CarSvg />
             </div>
@@ -67,7 +63,7 @@ export function HeroAnimation({
         </div>
 
         {/* HUD chips (not mirrored, so text stays readable) */}
-        <div className="glass gm-float absolute end-[6%] top-[14%] hidden items-center gap-3 rounded-2xl px-4 py-3 sm:flex">
+        <div className="glass gm-float absolute end-[6%] top-[12%] hidden items-center gap-3 rounded-2xl px-4 py-3 sm:flex">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent/15 text-accent">
             <Ship className="h-4 w-4" />
           </span>
@@ -122,15 +118,16 @@ export function HeroAnimation({
 
 function CarSvg() {
   return (
-    <svg viewBox="0 0 600 210" className="h-auto w-full overflow-visible">
+    <svg viewBox="0 -6 1000 404" className="h-auto w-full overflow-visible">
       <defs>
         <linearGradient id="hc-body" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#2c313c" />
-          <stop offset="0.55" stopColor="#12151c" />
+          <stop offset="0" stopColor="#3a404d" />
+          <stop offset="0.42" stopColor="#171a22" />
           <stop offset="1" stopColor="#07080b" />
         </linearGradient>
         <linearGradient id="hc-glass" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#223246" />
+          <stop offset="0" stopColor="#2e4057" />
+          <stop offset="0.55" stopColor="#0e1520" />
           <stop offset="1" stopColor="#070b12" />
         </linearGradient>
         <linearGradient id="hc-gold" x1="0" y1="0" x2="1" y2="0">
@@ -143,7 +140,7 @@ function CarSvg() {
           <stop offset="1" stopColor="#f6e1b0" stopOpacity="0" />
         </linearGradient>
         <radialGradient id="hc-rim">
-          <stop offset="0" stopColor="#434957" />
+          <stop offset="0" stopColor="#4a505e" />
           <stop offset="1" stopColor="#15181f" />
         </radialGradient>
         <filter id="hc-glow" x="-10%" y="-20%" width="120%" height="140%">
@@ -153,82 +150,123 @@ function CarSvg() {
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+        {/* Body stops at the sill: no traced ground fringe under the tyres. */}
+        <clipPath id="hc-sill">
+          <rect x="-60" y="-60" width="1120" height={GOLF.sillY + 60} />
+        </clipPath>
       </defs>
 
-      <ellipse cx="306" cy="199" rx="280" ry="9" fill="#000" opacity="0.65" />
-      <path className="gm-beam" d="M566 128 L820 90 L820 180 Z" fill="url(#hc-beam)" />
+      <ellipse cx="500" cy="376" rx="470" ry="13" fill="#000" opacity="0.7" />
+      <path className="gm-beam" d={GOLF.beam} fill="url(#hc-beam)" />
 
       {/* Body + glass: stroke draws in, then the fill fades up */}
-      <path
-        className="gm-draw gm-fill"
-        pathLength={1}
-        d={BODY}
-        fill="url(#hc-body)"
-        stroke="url(#hc-gold)"
-        strokeWidth="2.2"
-        strokeLinejoin="round"
-        filter="url(#hc-glow)"
-      />
-      <path
-        className="gm-draw gm-fill"
-        pathLength={1}
-        d={GLASS}
-        fill="url(#hc-glass)"
-        stroke="url(#hc-gold)"
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-        style={{ animationDelay: '0.5s, 1.9s' }}
-      />
-      <path className="gm-fill" d="M182 70 L216 69 L180 102 L148 102 Z" fill="#fff" opacity="0.07" />
+      <g clipPath="url(#hc-sill)">
+        <path
+          className="gm-draw gm-fill"
+          pathLength={1}
+          d={GOLF.body}
+          fill="url(#hc-body)"
+          stroke="url(#hc-gold)"
+          strokeWidth="2.6"
+          strokeLinejoin="round"
+          filter="url(#hc-glow)"
+        />
+      </g>
+      <path className="gm-draw" pathLength={1} d={GOLF.bottom} stroke="url(#hc-gold)" strokeWidth="2.6" strokeLinecap="round" filter="url(#hc-glow)" />
 
-      {/* Panel lines & details */}
+      {GOLF.windows.map((d) => (
+        <path
+          key={d.slice(0, 16)}
+          className="gm-draw gm-fill"
+          pathLength={1}
+          d={d}
+          fill="url(#hc-glass)"
+          stroke="url(#hc-gold)"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+          style={{ animationDelay: '0.5s, 1.9s' }}
+        />
+      ))}
+      <path className="gm-fill" d={GOLF.pillar} fill="#0a0c11" />
+
+      {/* Roof line, panel lines, arches */}
       <g
         className="gm-draw"
         fill="none"
         stroke="#d9a94e"
-        strokeOpacity="0.55"
-        strokeWidth="1.3"
+        strokeOpacity="0.6"
+        strokeWidth="1.5"
         strokeLinecap="round"
+        strokeLinejoin="round"
         style={{ animationDelay: '0.9s' }}
       >
-        <path pathLength={1} d="M250 65 L250 104 L252 156" />
-        <path pathLength={1} d="M402 104 L406 150" />
-        <path pathLength={1} d="M62 122 Q300 114 556 128" />
-        <path pathLength={1} d="M212 120 h18 M350 120 h18" />
+        <path pathLength={1} d={GOLF.roof} strokeOpacity="0.4" />
+        {GOLF.lines.map((d) => (
+          <path key={d.slice(0, 16)} pathLength={1} d={d} />
+        ))}
       </g>
-      <path d="M398 100 L414 94 L418 106 L404 108 Z" fill="#12151c" stroke="#d9a94e" strokeWidth="1" className="gm-fill" />
+
+      {/* Golf VIII creases catch the light */}
+      <g
+        className="gm-draw"
+        fill="none"
+        stroke="#f1d49a"
+        strokeOpacity="0.4"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+        style={{ animationDelay: '1.2s' }}
+      >
+        {GOLF.creases.map((d) => (
+          <path key={d.slice(0, 16)} pathLength={1} d={d} />
+        ))}
+      </g>
+      <g className="gm-fill" fill="none" stroke="#d9a94e" strokeOpacity="0.55" strokeWidth="1.6" strokeLinecap="round">
+        {GOLF.details.map((d) => (
+          <path key={d.slice(0, 16)} d={d} />
+        ))}
+      </g>
+
+      {GOLF.handles.map((d) => (
+        <path key={d.slice(0, 16)} className="gm-fill" d={d} fill="#1d212b" stroke="#d9a94e" strokeOpacity="0.8" strokeWidth="1" />
+      ))}
+      <path className="gm-fill" d={GOLF.mirror} fill="#141821" stroke="#d9a94e" strokeWidth="1.2" />
 
       {/* Lights */}
-      <path className="gm-light" d="M540 118 L568 126 L562 136 L534 128 Z" fill="#f6e1b0" filter="url(#hc-glow)" />
-      <path d="M42 118 L60 110 L62 124 L42 130 Z" fill="#c0392b" opacity="0.9" />
+      <path className="gm-light" d={GOLF.headlight} fill="#f6e1b0" filter="url(#hc-glow)" />
+      <path d={GOLF.taillight} fill="#c0392b" opacity="0.92" />
 
-      <Wheel cx={140} />
-      <Wheel cx={472} />
+      {GOLF.wheels.map((w) => (
+        <Wheel key={w.cx} cx={w.cx} cy={w.cy} r={w.r} rim={w.rim} />
+      ))}
     </svg>
   );
 }
 
-function Wheel({ cx }: { cx: number }) {
+/** Tyre in a dark arch gap + Golf-style twisted twin-spoke alloy that spins while driving. */
+function Wheel({ cx, cy, r, rim }: { cx: number; cy: number; r: number; rim: number }) {
   return (
     <g>
-      <circle cx={cx} cy={160} r={36} fill="#08090c" stroke="#2a2f3a" strokeWidth="2" />
-      <g className="gm-spin" style={{ transformOrigin: `${cx}px 160px`, transformBox: 'view-box' }}>
-        <circle cx={cx} cy={160} r={24} fill="url(#hc-rim)" stroke="url(#hc-gold)" strokeWidth="1.5" />
+      {/* Arch gap: cuts the body outline cleanly around the tyre */}
+      <circle cx={cx} cy={cy} r={r + 6} fill="#07080b" />
+      <circle cx={cx} cy={cy} r={r} fill="#0a0b0f" stroke="#2c313c" strokeWidth="2" />
+      <circle cx={cx} cy={cy} r={r - 8} fill="none" stroke="#1c2029" strokeWidth="1.5" />
+      <g className="gm-spin" style={{ transformOrigin: `${cx}px ${cy}px`, transformBox: 'view-box' }}>
+        <circle cx={cx} cy={cy} r={rim} fill="url(#hc-rim)" stroke="url(#hc-gold)" strokeWidth="1.8" />
         {[0, 72, 144, 216, 288].map((a) => (
-          <line
+          <path
             key={a}
-            x1={cx}
-            y1={160}
-            x2={cx}
-            y2={139}
-            stroke="#d9a94e"
+            transform={`rotate(${a} ${cx} ${cy})`}
+            d={`M${cx - 4} ${cy - 10} Q${cx + 8} ${cy - rim * 0.55} ${cx + 2} ${cy - rim + 3} M${cx + 4} ${cy - 10} Q${cx + 18} ${cy - rim * 0.52} ${cx + 13} ${cy - rim + 4}`}
+            fill="none"
+            stroke="#e2c07a"
             strokeWidth="3"
             strokeLinecap="round"
-            opacity="0.85"
-            transform={`rotate(${a} ${cx} 160)`}
+            opacity="0.9"
           />
         ))}
-        <circle cx={cx} cy={160} r={5} fill="#f1d49a" />
+        <circle cx={cx} cy={cy} r={rim - 3} fill="none" stroke="#d9a94e" strokeOpacity="0.35" strokeWidth="1" />
+        <circle cx={cx} cy={cy} r={11} fill="#1a1e27" stroke="#d9a94e" strokeWidth="1.5" />
+        <circle cx={cx} cy={cy} r={4} fill="#f1d49a" />
       </g>
     </g>
   );

@@ -6,6 +6,7 @@ import { SITE, MAPS_URL, whatsappLink } from '@/lib/site';
 import { alternates } from '@/lib/seo';
 import { PageHero } from '@/components/PageHero';
 import { LeadForm } from '@/components/LeadForm';
+import { SocialLinks } from '@/components/SocialLinks';
 import { FadeIn } from '@/components/FadeIn';
 
 export async function generateMetadata({
@@ -29,7 +30,7 @@ export default async function ContactPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, tl] = await Promise.all([getTranslations('contact'), getTranslations('lead')]);
+  const [t, tl, tc] = await Promise.all([getTranslations('contact'), getTranslations('lead'), getTranslations('common')]);
   const wa = whatsappLink();
 
   const items = [
@@ -89,6 +90,10 @@ export default async function ContactPage({
                   {t('directions')}
                 </a>
               </div>
+            </FadeIn>
+
+            <FadeIn delay={0.3}>
+              <SocialLinks className="pt-2" label={tc('followUs')} />
             </FadeIn>
           </div>
 

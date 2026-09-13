@@ -77,3 +77,4 @@ avec un transitaire** avant mise en ligne.
 ## Crédits médias
 
 - Vidéos : *2025 Monterey Ferrari F80* et *Aston Martin Valour* — VictorDoesCars, CC BY 4.0 (Wikimedia Commons).
+- Silhouette de l’animation d’accueil : tracée d’après *2020 Volkswagen Golf Style 1.5 Side* — Vauxford, CC BY-SA 4.0 (Wikimedia Commons) ; les tracés dérivés (`src/components/home/golfPaths.ts`) sont sous la même licence.

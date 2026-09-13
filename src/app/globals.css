@@ -291,9 +291,10 @@ html[dir='rtl'] .marquee-track {
 }
 
 /* ──────────────────────────────────────────────────────────────
-   Hero car scene (SVG + CSS). Resting styles are the END state, and the
-   entrance keyframes only define `from` with backwards fill — so with
-   animations disabled everything is simply visible.
+   Hero car scene (SVG line-art traced from a Golf VIII + CSS).
+   Resting styles are the END state and entrance keyframes only define
+   `from` with backwards fill — with animations disabled everything is
+   simply visible. The car faces right, so the world moves left.
    ────────────────────────────────────────────────────────────── */
 @keyframes gm-draw {
   from {
@@ -373,14 +374,14 @@ html[dir='rtl'] .marquee-track {
   stroke-dasharray: 1;
 }
 .hero-anim .gm-draw {
-  animation: gm-draw 2.4s cubic-bezier(0.65, 0, 0.35, 1) 0.2s backwards;
+  animation: gm-draw 2.6s cubic-bezier(0.65, 0, 0.35, 1) 0.2s backwards;
 }
 .hero-anim .gm-draw.gm-fill {
-  animation: gm-draw 2.4s cubic-bezier(0.65, 0, 0.35, 1) 0.2s backwards,
-    gm-fill 1.2s ease 1.6s backwards;
+  animation: gm-draw 2.6s cubic-bezier(0.65, 0, 0.35, 1) 0.2s backwards,
+    gm-fill 1.2s ease 1.8s backwards;
 }
 .hero-anim .gm-fill {
-  animation: gm-fill 1.2s ease 1.8s backwards;
+  animation: gm-fill 1.2s ease 2s backwards;
 }
 .hero-anim .gm-spin {
   animation: gm-spin 0.5s linear infinite;

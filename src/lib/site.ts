@@ -41,7 +41,7 @@ export const SITE = {
 
   social: {
     instagram: '',
-    tiktok: '',
+    tiktok: 'https://www.tiktok.com/@skh.global.motors',
     facebook: '',
     google: '',
   },
@@ -81,6 +81,11 @@ export const SITE = {
       label: 'Aston Martin Valour — VictorDoesCars',
       href: 'https://commons.wikimedia.org/wiki/File:2025-08-14_Monterey_Aston_Martin_Valour.webm',
       license: 'CC BY 4.0',
+    },
+    {
+      label: 'Silhouette Golf VIII tracée d’après une photo de Vauxford',
+      href: 'https://commons.wikimedia.org/wiki/File:2020_Volkswagen_Golf_Style_1.5_Side.jpg',
+      license: 'CC BY-SA 4.0',
     },
   ],
 } as const;

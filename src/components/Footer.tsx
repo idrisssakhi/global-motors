@@ -4,6 +4,7 @@ import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { SITE, MAPS_URL, whatsappLink } from '@/lib/site';
 import { Logo } from './Logo';
+import { SocialLinks } from './SocialLinks';
 
 export function Footer() {
   const t = useTranslations();
@@ -34,6 +35,7 @@ export function Footer() {
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-muted">
             {t('footer.tagline')}
           </p>
+          <SocialLinks className="mt-6" label={t('common.followUs')} />
         </div>
 
         <FooterCol title={t('footer.explore')} links={explore} />
