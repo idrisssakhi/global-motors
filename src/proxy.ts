@@ -70,6 +70,7 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Everything except Next internals, API routes, and static files.
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
+  // Everything except Next internals, API routes, static files and the
+  // generated metadata images (share card, icons) served at the root.
+  matcher: ['/((?!api|_next|_vercel|opengraph-image|twitter-image|apple-icon|.*\\..*).*)'],
 };

@@ -14,8 +14,8 @@ import {
 
 import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
-import { SITE, whatsappLink } from '@/lib/site';
-import { alternates } from '@/lib/seo';
+import { whatsappLink } from '@/lib/site';
+import { pageMeta } from '@/lib/seo';
 import { getCustomsSettings, getFeaturedCars } from '@/lib/cars';
 import { toSummary } from '@/lib/car-filters';
 import { autoDealerSchema, faqSchema } from '@/lib/structured-data';
@@ -42,12 +42,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'home' });
-  return {
-    title: t('metaTitle'),
-    description: t('metaDescription'),
-    alternates: alternates(locale, ''),
-    openGraph: { title: t('metaTitle'), description: t('metaDescription'), url: SITE.url, siteName: SITE.name },
-  };
+  return pageMeta(locale, '', t('metaTitle'), t('metaDescription'));
 }
 
 export default async function HomePage({

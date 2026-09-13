@@ -12,7 +12,7 @@
   },
   "home": {
     "metaTitle": "SKH Global Motors — Véhicules d’exception en France & export vers l’Algérie",
-    "metaDescription": "SKH Global Motors sélectionne des véhicules récents et premium en France et les exporte clé en main vers l’Algérie. Stock vérifié, simulateur de dédouanement, accompagnement FR / AR.",
+    "metaDescription": "Véhicules récents et premium vérifiés en France, export clé en main vers l’Algérie et simulateur de dédouanement. Conseil en français et en arabe.",
     "heroEyebrow": "Paris · Marseille · Alger",
     "heroTitleA": "L’automobile d’exception,",
     "heroTitleB": "de la France à l’Algérie.",
@@ -181,7 +181,7 @@
   },
   "sim": {
     "metaTitle": "Simulateur de dédouanement voiture Algérie 2026",
-    "metaDescription": "Calculez gratuitement les droits de douane, la TVA et les taxes d’importation d’une voiture en Algérie : valeur CIF, abattement décret 23-74 pour les véhicules de moins de 3 ans, total en dinars et en euros.",
+    "metaDescription": "Calculez gratuitement droits de douane et TVA d’une voiture importée en Algérie : âge du véhicule, abattement moins de 3 ans et régime CCR.",
     "eyebrow": "Simulateur de dédouanement",
     "title": "Estimez vos droits et taxes en Algérie",
     "subtitle": "Renseignez le véhicule : le calcul se met à jour instantanément, de la valeur en douane jusqu’au montant final en dinars.",
@@ -353,7 +353,8 @@
     "dataText": "Les informations transmises via nos formulaires (nom, téléphone, e-mail, message) sont utilisées uniquement pour répondre à votre demande et ne sont jamais cédées à des tiers. Vous pouvez demander leur suppression à tout moment en nous contactant.",
     "credits": "Crédits médias",
     "simulator": "Simulateur de dédouanement",
-    "simulatorText": "Les résultats du simulateur sont fournis à titre indicatif et n’ont aucune valeur contractuelle. Seuls les services des douanes algériennes déterminent le montant exigible."
+    "simulatorText": "Les résultats du simulateur sont fournis à titre indicatif et n’ont aucune valeur contractuelle. Seuls les services des douanes algériennes déterminent le montant exigible.",
+    "metaDescription": "Mentions légales de SKH Global Motors (SAS, SIREN 991 121 880) : éditeur, hébergement, données personnelles et crédits médias."
   },
   "footer": {
     "tagline": "Véhicules récents et premium en France, export clé en main vers l’Algérie.",

@@ -25,7 +25,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified,
     changeFrequency,
     priority,
-    alternates: { languages: { fr: `${base}${path || '/'}`, ar: `${base}/ar${path}` } },
+    alternates: { languages: { fr: `${base}${path || '/'}`, ar: `${base}/ar${path}`, 'x-default': `${base}${path || '/'}` } },
   });
 
   const cars = await getCars();

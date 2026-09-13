@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import type { Locale } from '@/i18n/routing';
 import { SITE } from '@/lib/site';
-import { alternates } from '@/lib/seo';
+import { pageMeta } from '@/lib/seo';
 import { getCustomsSettings } from '@/lib/cars';
 import { formatNumber, formatPercent } from '@/lib/format';
 import { breadcrumbSchema, faqSchema } from '@/lib/structured-data';
@@ -23,12 +23,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'sim' });
-  return {
-    title: `${t('metaTitle')} — ${SITE.name}`,
-    description: t('metaDescription'),
-    alternates: alternates(locale, '/simulateur-dedouanement'),
-    openGraph: { title: t('metaTitle'), description: t('metaDescription') },
-  };
+  return pageMeta(locale, '/simulateur-dedouanement', `${t('metaTitle')} — ${SITE.name}`, t('metaDescription'));
 }
 
 export default async function SimulatorPage({

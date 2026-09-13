@@ -4,7 +4,7 @@ import { ArrowRight, Eye, FileCheck2, HeartHandshake } from 'lucide-react';
 
 import { Link } from '@/i18n/navigation';
 import { SITE } from '@/lib/site';
-import { alternates } from '@/lib/seo';
+import { pageMeta } from '@/lib/seo';
 import { formatDate } from '@/lib/format';
 import { PageHero } from '@/components/PageHero';
 import { AutoplayVideo } from '@/components/AutoplayVideo';
@@ -18,11 +18,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'about' });
-  return {
-    title: `${t('metaTitle')} — ${SITE.name}`,
-    description: t('lead'),
-    alternates: alternates(locale, '/a-propos'),
-  };
+  return pageMeta(locale, '/a-propos', `${t('metaTitle')} — ${SITE.name}`, t('lead'));
 }
 
 export default async function AboutPage({

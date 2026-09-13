@@ -23,8 +23,7 @@ import {
 import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { SITE, whatsappLink } from '@/lib/site';
-import { alternates, videoEmbed } from '@/lib/seo';
-import { carImageUrl } from '@/lib/image';
+import { pageMeta, videoEmbed } from '@/lib/seo';
 import { getAllSlugs, getCarBySlug, getCustomsSettings, getRelatedCars } from '@/lib/cars';
 import { toSummary } from '@/lib/car-filters';
 import { ageBracketFromDate, isUnderThreeYears, toCustomsFuel } from '@/lib/customs';
@@ -59,17 +58,7 @@ export async function generateMetadata({
     (locale === 'ar' ? car.description_ar : car.description_fr) ||
     `${title} — ${formatPrice(car.price_eur, locale as Locale)}`;
 
-  return {
-    title: `${title} — ${SITE.name}`,
-    description,
-    alternates: alternates(locale, `/voitures/${slug}`),
-    openGraph: {
-      title,
-      description,
-      url: `${SITE.url}/voitures/${slug}`,
-      images: car.images[0] ? [carImageUrl(car.images[0])] : undefined,
-    },
-  };
+  return pageMeta(locale, `/voitures/${slug}`, `${title} — ${SITE.name}`, description);
 }
 
 export default async function CarDetailPage({

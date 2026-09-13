@@ -22,6 +22,7 @@ export function autoDealerSchema() {
     telephone: SITE.phone || undefined,
     email: SITE.email || undefined,
     image: `${SITE.url}/opengraph-image`,
+    logo: `${SITE.url}/apple-icon`,
     areaServed: SITE.serviceAreas,
     foundingDate: SITE.legal.foundingDate,
     vatID: SITE.legal.vat,

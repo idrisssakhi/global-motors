@@ -42,6 +42,9 @@ export const metadata: Metadata = {
   authors: [{ name: SITE.name }],
   keywords: [...SITE.keywords],
   robots: { index: true, follow: true },
+  // Defaults for pages without their own metadata (e.g. 404); pages use pageMeta().
+  openGraph: { type: 'website', siteName: SITE.name },
+  twitter: { card: 'summary_large_image' },
 };
 
 export const viewport: Viewport = {

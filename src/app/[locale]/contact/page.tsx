@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Clock, Mail, MapPin, MessageCircle, Navigation, Phone } from 'lucide-react';
 
 import { SITE, MAPS_URL, whatsappLink } from '@/lib/site';
-import { alternates } from '@/lib/seo';
+import { pageMeta } from '@/lib/seo';
 import { PageHero } from '@/components/PageHero';
 import { LeadForm } from '@/components/LeadForm';
 import { SocialLinks } from '@/components/SocialLinks';
@@ -16,11 +16,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'contact' });
-  return {
-    title: `${t('metaTitle')} — ${SITE.name}`,
-    description: t('subtitle'),
-    alternates: alternates(locale, '/contact'),
-  };
+  return pageMeta(locale, '/contact', `${t('metaTitle')} — ${SITE.name}`, t('subtitle'));
 }
 
 export default async function ContactPage({

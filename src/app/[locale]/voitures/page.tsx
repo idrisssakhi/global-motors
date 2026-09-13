@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import type { Locale } from '@/i18n/routing';
 import { SITE } from '@/lib/site';
-import { alternates } from '@/lib/seo';
+import { pageMeta } from '@/lib/seo';
 import { getCars, getMakes } from '@/lib/cars';
 import { toSummary } from '@/lib/car-filters';
 import { breadcrumbSchema } from '@/lib/structured-data';
@@ -21,11 +21,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'cars' });
-  return {
-    title: `${t('metaTitle')} — ${SITE.name}`,
-    description: t('subtitle'),
-    alternates: alternates(locale, '/voitures'),
-  };
+  return pageMeta(locale, '/voitures', `${t('metaTitle')} — ${SITE.name}`, t('subtitle'));
 }
 
 export default async function CarsPage({
