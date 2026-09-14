@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { normalizeCustoms } from '@/lib/cars';
 import { DEFAULT_CUSTOMS } from '@/lib/customs';
 import { AdminNav } from '@/components/admin/AdminNav';
-import { CarForm } from '@/components/admin/CarForm';
+import { NewCarEditor } from '@/components/admin/NewCarEditor';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,7 +34,7 @@ export default async function NewCarPage() {
         <h1 className="mb-8 mt-4 font-display text-2xl font-bold text-primary">
           Ajouter un véhicule
         </h1>
-        <CarForm customs={customs} />
+        <NewCarEditor customs={customs} />
       </main>
     </div>
   );

@@ -7,6 +7,7 @@ import { Loader2, Upload, X, Save, Calculator, AlertTriangle } from 'lucide-reac
 
 import { createClient } from '@/lib/supabase/client';
 import { carImageUrl } from '@/lib/image';
+import { compressImage, uploadCarImage } from '@/lib/car-images';
 import { createCar, updateCar } from '@/app/admin/actions';
 import {
   ageBracketFromDate,
@@ -43,36 +44,6 @@ const VAT_RATE = 0.2;
 // Prices are whole euros only (no decimals on TTC / HT).
 const roundEuro = (n: number) => Math.round(n);
 
-// Phone photos are often 4–8 MB; the site never displays them wider than
-// 1920px. Resizing before upload cuts Supabase storage + egress ~10–20×.
-const MAX_IMAGE_EDGE = 1920;
-
-/** Resize + re-encode a photo in the browser. Falls back to the original file. */
-async function compressImage(file: File): Promise<{ blob: Blob; ext: string }> {
-  const original = { blob: file as Blob, ext: file.name.split('.').pop() ?? 'jpg' };
-  try {
-    const bitmap = await createImageBitmap(file);
-    const scale = Math.min(1, MAX_IMAGE_EDGE / Math.max(bitmap.width, bitmap.height));
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.round(bitmap.width * scale);
-    canvas.height = Math.round(bitmap.height * scale);
-    canvas.getContext('2d')?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    bitmap.close();
-
-    const encode = (type: string) =>
-      new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, type, 0.82));
-    let blob = await encode('image/webp');
-    // Browsers without WebP encoding silently return PNG — use JPEG instead.
-    if (!blob || blob.type !== 'image/webp') blob = await encode('image/jpeg');
-
-    if (!blob || blob.size >= file.size) return original;
-    return { blob, ext: blob.type === 'image/webp' ? 'webp' : 'jpg' };
-  } catch {
-    // e.g. HEIC in a browser that can't decode it — upload as-is.
-    return original;
-  }
-}
-
 /** Trimmed string from FormData, or null when empty. */
 function textOrNull(fd: FormData, name: string): string | null {
   return String(fd.get(name) ?? '').trim() || null;
@@ -86,33 +57,37 @@ function numberOrNull(fd: FormData, name: string): number | null {
 
 export function CarForm({
   car,
+  draft,
   customs,
 }: {
   car?: Car;
+  /** Pre-filled values for a new car (e.g. from an inspection report). */
+  draft?: Partial<CarInput>;
   customs: CustomsSettings;
 }) {
+  const initial: Partial<CarInput> | undefined = car ?? draft;
   const router = useRouter();
   const supabase = createClient();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [images, setImages] = useState<string[]>(car?.images ?? []);
+  const [images, setImages] = useState<string[]>(initial?.images ?? []);
 
   // Price fields are controlled so HT and TTC can be derived from each other.
   const [priceTtc, setPriceTtc] = useState(
-    car?.price_eur != null ? String(Number(car.price_eur)) : ''
+    initial?.price_eur != null ? String(Number(initial.price_eur)) : ''
   );
   const [priceHt, setPriceHt] = useState(
-    car?.price_ht != null ? String(Number(car.price_ht)) : ''
+    initial?.price_ht != null ? String(Number(initial.price_ht)) : ''
   );
 
   // Inputs of the live customs preview.
-  const [fuel, setFuel] = useState<FuelType>(car?.fuel ?? 'essence');
+  const [fuel, setFuel] = useState<FuelType>(initial?.fuel ?? 'essence');
   const [engineCc, setEngineCc] = useState(
-    car?.engine_cc != null ? String(car.engine_cc) : ''
+    initial?.engine_cc != null ? String(initial.engine_cc) : ''
   );
   const [firstRegistration, setFirstRegistration] = useState(
-    car?.first_registration ?? ''
+    initial?.first_registration ?? ''
   );
 
   // Typing the TTC price fills the HT price (and vice-versa) at 20% VAT.
@@ -164,17 +139,7 @@ export function CarForm({
       const uploaded: string[] = [];
       for (const file of Array.from(files)) {
         const { blob, ext } = await compressImage(file);
-        const path = `${crypto.randomUUID()}.${ext}`;
-        // Paths are unique and never overwritten → cache for a year.
-        const { error } = await supabase.storage
-          .from('car-images')
-          .upload(path, blob, {
-            cacheControl: '31536000',
-            contentType: blob.type || file.type,
-            upsert: false,
-          });
-        if (error) throw error;
-        uploaded.push(path);
+        uploaded.push(await uploadCarImage(supabase, blob, ext));
       }
       setImages((prev) => [...prev, ...uploaded]);
     } catch (e) {
@@ -268,7 +233,7 @@ export function CarForm({
             <input
               id="make"
               name="make"
-              defaultValue={car?.make}
+              defaultValue={initial?.make}
               required
               className={field}
               placeholder="Mercedes-Benz"
@@ -281,7 +246,7 @@ export function CarForm({
             <input
               id="model"
               name="model"
-              defaultValue={car?.model}
+              defaultValue={initial?.model}
               required
               className={field}
               placeholder="Classe A"
@@ -294,7 +259,7 @@ export function CarForm({
             <input
               id="version"
               name="version"
-              defaultValue={car?.version ?? ''}
+              defaultValue={initial?.version ?? ''}
               className={field}
               placeholder="AMG Line"
             />
@@ -309,7 +274,7 @@ export function CarForm({
               type="number"
               min={1990}
               max={2035}
-              defaultValue={car?.year ?? new Date().getFullYear()}
+              defaultValue={initial?.year ?? new Date().getFullYear()}
               required
               className={field}
             />
@@ -334,7 +299,7 @@ export function CarForm({
             <input
               id="immatriculation"
               name="immatriculation"
-              defaultValue={car?.immatriculation ?? ''}
+              defaultValue={initial?.immatriculation ?? ''}
               onChange={(e) => {
                 e.target.value = e.target.value.toUpperCase();
               }}
@@ -349,7 +314,7 @@ export function CarForm({
             <input
               id="title_fr"
               name="title_fr"
-              defaultValue={car?.title_fr ?? ''}
+              defaultValue={initial?.title_fr ?? ''}
               className={field}
               placeholder="Mercedes Classe A 200 AMG Line"
             />
@@ -361,7 +326,7 @@ export function CarForm({
             <input
               id="title_ar"
               name="title_ar"
-              defaultValue={car?.title_ar ?? ''}
+              defaultValue={initial?.title_ar ?? ''}
               className={`${field} font-[family-name:var(--font-cairo)]`}
               placeholder="مرسيدس الفئة A"
             />
@@ -428,7 +393,7 @@ export function CarForm({
               name="mileage_km"
               type="number"
               min={0}
-              defaultValue={car?.mileage_km ?? 0}
+              defaultValue={initial?.mileage_km ?? 0}
               className={field}
             />
           </div>
@@ -457,7 +422,7 @@ export function CarForm({
             <select
               id="gearbox"
               name="gearbox"
-              defaultValue={car?.gearbox ?? 'automatique'}
+              defaultValue={initial?.gearbox ?? 'automatique'}
               className={`${field} cursor-pointer`}
             >
               {GEARBOX_TYPES.map((g) => (
@@ -496,7 +461,7 @@ export function CarForm({
               name="power_hp"
               type="number"
               min={0}
-              defaultValue={car?.power_hp ?? ''}
+              defaultValue={initial?.power_hp ?? ''}
               className={field}
             />
           </div>
@@ -509,7 +474,7 @@ export function CarForm({
               name="doors"
               type="number"
               min={0}
-              defaultValue={car?.doors ?? ''}
+              defaultValue={initial?.doors ?? ''}
               className={field}
             />
           </div>
@@ -522,7 +487,7 @@ export function CarForm({
               name="seats"
               type="number"
               min={0}
-              defaultValue={car?.seats ?? ''}
+              defaultValue={initial?.seats ?? ''}
               className={field}
             />
           </div>
@@ -533,7 +498,7 @@ export function CarForm({
             <input
               id="color"
               name="color"
-              defaultValue={car?.color ?? ''}
+              defaultValue={initial?.color ?? ''}
               className={field}
               placeholder="Noir cosmos"
             />
@@ -545,7 +510,7 @@ export function CarForm({
             <input
               id="location"
               name="location"
-              defaultValue={car?.location ?? 'Argenteuil, France'}
+              defaultValue={initial?.location ?? 'Argenteuil, France'}
               className={field}
             />
           </div>
@@ -630,7 +595,7 @@ export function CarForm({
               id="description_fr"
               name="description_fr"
               rows={6}
-              defaultValue={car?.description_fr ?? ''}
+              defaultValue={initial?.description_fr ?? ''}
               className={field}
             />
           </div>
@@ -642,7 +607,7 @@ export function CarForm({
               id="description_ar"
               name="description_ar"
               rows={6}
-              defaultValue={car?.description_ar ?? ''}
+              defaultValue={initial?.description_ar ?? ''}
               className={`${field} font-[family-name:var(--font-cairo)]`}
             />
           </div>
@@ -718,7 +683,7 @@ export function CarForm({
             id="video_url"
             name="video_url"
             type="url"
-            defaultValue={car?.video_url ?? ''}
+            defaultValue={initial?.video_url ?? ''}
             className={field}
             placeholder="https://www.youtube.com/watch?v=…"
           />
@@ -738,7 +703,7 @@ export function CarForm({
             <select
               id="status"
               name="status"
-              defaultValue={car?.status ?? 'disponible'}
+              defaultValue={initial?.status ?? 'disponible'}
               className={`${field} cursor-pointer`}
             >
               {CAR_STATUSES.map((s) => (
@@ -752,7 +717,7 @@ export function CarForm({
             <input
               type="checkbox"
               name="featured"
-              defaultChecked={car?.featured ?? false}
+              defaultChecked={initial?.featured ?? false}
               className="h-4 w-4 cursor-pointer accent-accent"
             />
             En vedette (page d’accueil)
@@ -761,7 +726,7 @@ export function CarForm({
             <input
               type="checkbox"
               name="export_dz"
-              defaultChecked={car?.export_dz ?? true}
+              defaultChecked={initial?.export_dz ?? true}
               className="h-4 w-4 cursor-pointer accent-accent"
             />
             Éligible export Algérie
