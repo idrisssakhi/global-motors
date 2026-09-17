@@ -12,18 +12,30 @@ export type { CarFilters } from '@/lib/car-filters';
 export const CARS_TAG = 'cars';
 export const CUSTOMS_TAG = 'customs';
 
-/** True when Supabase env vars are present (lets the app build without creds). */
+let warnedUnconfigured = false;
+
+/**
+ * True when Supabase env vars are present (lets the app build without creds).
+ * NEXT_PUBLIC_* vars are inlined at BUILD time: on the host they must be set
+ * before the build runs, or every page is prerendered with an empty stock.
+ */
 export function isSupabaseConfigured(): boolean {
-  return Boolean(
+  const ok = Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   );
+  if (!ok && !warnedUnconfigured) {
+    warnedUnconfigured = true;
+    console.warn(
+      '[supabase] NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY missing — public pages will show no cars. Set them and rebuild.'
+    );
+  }
+  return ok;
 }
 
 /** The whole inventory in ONE cached query; every public read derives from it. */
-const getInventory = unstable_cache(
+const getCachedInventory = unstable_cache(
   async (): Promise<Car[]> => {
-    if (!isSupabaseConfigured()) return [];
     const { data, error } = await createPublicClient()
       .from('cars')
       .select('*')
@@ -36,6 +48,11 @@ const getInventory = unstable_cache(
   ['cars-inventory'],
   { tags: [CARS_TAG], revalidate: 86400 }
 );
+
+/** Checked outside the cache so a missing config never caches an empty stock. */
+async function getInventory(): Promise<Car[]> {
+  return isSupabaseConfigured() ? getCachedInventory() : [];
+}
 
 /** Public listing — never returns sold cars. */
 export async function getCars(filters: CarFilters = {}): Promise<Car[]> {
@@ -66,9 +83,8 @@ export async function getRelatedCars(car: Car, limit = 3): Promise<Car[]> {
 }
 
 /** Customs rates edited from the admin; falls back to the defaults. */
-const getCustomsRow = unstable_cache(
+const getCachedCustomsRow = unstable_cache(
   async (): Promise<Record<string, unknown> | null> => {
-    if (!isSupabaseConfigured()) return null;
     const { data, error } = await createPublicClient()
       .from('customs_settings')
       .select('*')
@@ -80,6 +96,10 @@ const getCustomsRow = unstable_cache(
   ['customs-settings-row'],
   { tags: [CUSTOMS_TAG], revalidate: 86400 }
 );
+
+async function getCustomsRow(): Promise<Record<string, unknown> | null> {
+  return isSupabaseConfigured() ? getCachedCustomsRow() : null;
+}
 
 /**
  * Customs rates edited from the admin. The raw row is cached and normalised
