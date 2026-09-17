@@ -112,7 +112,7 @@ export function LeadForm({
               </p>
             )}
 
-            <button type="submit" disabled={pending} className="btn-gold w-full cursor-pointer disabled:opacity-60">
+            <button type="submit" disabled={pending} className="btn-primary w-full cursor-pointer disabled:opacity-60">
               {pending ? <Loader2 className="h-5 w-5 animate-spin" aria-hidden /> : <Send className="h-4 w-4 rtl:-scale-x-100" aria-hidden />}
               {pending ? t('sending') : t('submit')}
             </button>

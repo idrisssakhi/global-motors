@@ -93,7 +93,7 @@ export function Header() {
             </a>
           )}
           <LanguageSwitcher />
-          <Link href="/simulateur-dedouanement" className="btn-gold !px-5 !py-2.5 text-sm">
+          <Link href="/simulateur-dedouanement" className="btn-primary !px-5 !py-2.5 text-sm">
             <Calculator className="h-4 w-4" aria-hidden />
             {t('cta')}
           </Link>
@@ -146,7 +146,7 @@ export function Header() {
               <Link
                 href="/simulateur-dedouanement"
                 onClick={() => setOpen(false)}
-                className="btn-gold flex-1 !py-3 text-sm"
+                className="btn-primary flex-1 !py-3 text-sm"
               >
                 <Calculator className="h-4 w-4" aria-hidden />
                 {t('cta')}

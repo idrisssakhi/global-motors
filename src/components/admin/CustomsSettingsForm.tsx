@@ -322,7 +322,7 @@ export function CustomsSettingsForm({ initial }: { initial: CustomsSettings }) {
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-canvas transition-colors hover:bg-accent-600 disabled:opacity-60"
+          className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-accent-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-accent-700 disabled:opacity-60"
         >
           {pending ? (
             <Loader2 className="h-5 w-5 animate-spin" aria-hidden />

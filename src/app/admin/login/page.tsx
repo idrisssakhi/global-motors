@@ -37,7 +37,7 @@ export default function AdminLoginPage() {
     'w-full rounded-xl border border-line bg-canvas px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-accent';
 
   return (
-    <div className="grid min-h-screen place-items-center bg-[radial-gradient(ellipse_at_top,rgb(217_169_78/0.12),transparent_60%)] px-4">
+    <div className="grid min-h-screen place-items-center bg-[radial-gradient(ellipse_at_top,rgb(212_16_27/0.14),transparent_60%)] px-4">
       <div className="w-full max-w-sm rounded-2xl border border-line bg-surface p-8 shadow-[var(--shadow-card)]">
         <div className="mb-6 flex flex-col items-start gap-3">
           <Logo height={34} />
@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 font-semibold text-canvas transition-colors hover:bg-accent-600 disabled:opacity-60"
+            className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-accent-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-accent-700 disabled:opacity-60"
           >
             {loading ? (
               <Loader2 className="h-5 w-5 animate-spin" aria-hidden />

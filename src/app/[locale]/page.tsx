@@ -102,7 +102,7 @@ export default async function HomePage({
             <div className="bg-grid relative mt-12 overflow-hidden rounded-3xl border border-white/[0.07] p-10 text-center sm:p-16">
               <p className="font-display text-2xl font-semibold text-white sm:text-3xl">{t('emptyTitle')}</p>
               <p className="mx-auto mt-3 max-w-xl text-muted">{t('emptyText')}</p>
-              <Link href="/contact" className="btn-gold mt-8">
+              <Link href="/contact" className="btn-primary mt-8">
                 {t('emptyCta')}
                 <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
               </Link>
@@ -143,7 +143,7 @@ export default async function HomePage({
                 <h2 className="font-display mt-4 text-3xl font-semibold leading-tight text-white sm:text-5xl">{t('searchTitle')}</h2>
                 <p className="mt-4 text-white/75">{t('searchText')}</p>
               </div>
-              <span className="btn-gold shrink-0">
+              <span className="btn-primary shrink-0">
                 <Search className="h-4 w-4" aria-hidden />
                 {t('searchCta')}
               </span>
@@ -200,7 +200,7 @@ export default async function HomePage({
                 <p className="mt-4 max-w-lg text-lg text-muted">{t('ctaSubtitle')}</p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   {wa ? (
-                    <a href={wa} target="_blank" rel="noopener noreferrer" className="btn-gold">
+                    <a href={wa} target="_blank" rel="noopener noreferrer" className="btn-primary">
                       <MessageCircle className="h-4 w-4" aria-hidden />
                       {t('ctaPrimary')}
                     </a>

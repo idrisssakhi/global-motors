@@ -2,7 +2,8 @@
 
 /* ──────────────────────────────────────────────────────────────
    SKH Global Motors — design tokens
-   Night showroom: near-black canvas, graphite surfaces, champagne gold.
+   Night showroom: near-black canvas, graphite surfaces, SKH brand red
+   (logo red #D4101B; the logo's black parts render white on the canvas).
    ────────────────────────────────────────────────────────────── */
 @theme {
   --color-canvas: #07080b;
@@ -16,10 +17,13 @@
   --color-primary-600: #d7dbe3;
   --color-primary-50: #171a23;
 
-  --color-accent: #d9a94e;
-  --color-accent-600: #c4923a;
-  --color-accent-50: #221c10;
-  --color-accent-soft: #f1d49a;
+  /* accent: red readable as text/icons on the dark canvas (5.4:1).
+     accent-600: exact logo red — solid fills with white text (5.4:1). */
+  --color-accent: #ef4650;
+  --color-accent-600: #d4101b;
+  --color-accent-700: #b50d17;
+  --color-accent-50: #240b0e;
+  --color-accent-soft: #ff8a90;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-sora), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -30,7 +34,7 @@
 
   --shadow-card: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 20px 40px -24px rgb(0 0 0 / 0.8);
   --shadow-card-hover: 0 1px 0 rgb(255 255 255 / 0.06) inset,
-    0 30px 60px -20px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(217 169 78 / 0.25);
+    0 30px 60px -20px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(212 16 27 / 0.3);
 
   --animate-marquee: gm-marquee 40s linear infinite;
 }
@@ -53,8 +57,8 @@ html[dir='rtl'] .font-display {
 }
 
 ::selection {
-  background: var(--color-accent);
-  color: var(--color-canvas);
+  background: var(--color-accent-600);
+  color: #ffffff;
 }
 
 /* Lenis smooth scroll */
@@ -93,9 +97,9 @@ html.lenis body {
     }
   }
 
-  /* Gold gradient text */
-  .text-gold {
-    background: linear-gradient(100deg, #f6e1b0 0%, #d9a94e 45%, #a8772a 100%);
+  /* Brand red gradient text */
+  .text-brand {
+    background: linear-gradient(100deg, #ff6b73 0%, #ef4650 40%, #d4101b 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -131,7 +135,7 @@ html.lenis body {
   }
 
   /* Buttons */
-  .btn-gold {
+  .btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -139,15 +143,15 @@ html.lenis body {
     border-radius: 9999px;
     padding: 0.9rem 1.6rem;
     font-weight: 600;
-    color: var(--color-canvas);
-    background: linear-gradient(100deg, #f1d49a, #d9a94e 55%, #c4923a);
-    box-shadow: 0 10px 30px -10px rgb(217 169 78 / 0.55);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+    color: #ffffff;
+    background: var(--color-accent-600);
+    box-shadow: 0 10px 30px -10px rgb(212 16 27 / 0.6);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
   }
-  .btn-gold:hover {
+  .btn-primary:hover {
     transform: translateY(-1px);
-    filter: brightness(1.06);
-    box-shadow: 0 16px 40px -12px rgb(217 169 78 / 0.7);
+    background: var(--color-accent-700);
+    box-shadow: 0 16px 40px -12px rgb(212 16 27 / 0.75);
   }
   .btn-ghost {
     display: inline-flex;
@@ -183,8 +187,8 @@ html.lenis body {
     color: rgb(150 158 172 / 0.7);
   }
   .field:focus {
-    border-color: rgb(217 169 78 / 0.7);
-    box-shadow: 0 0 0 3px rgb(217 169 78 / 0.15);
+    border-color: rgb(239 70 80 / 0.7);
+    box-shadow: 0 0 0 3px rgb(239 70 80 / 0.15);
   }
   select.field {
     cursor: pointer;
@@ -387,7 +391,7 @@ html[dir='rtl'] .marquee-track {
   animation: gm-spin 0.5s linear infinite;
 }
 .hero-anim .gm-road-dashes {
-  background-image: repeating-linear-gradient(90deg, rgb(217 169 78 / 0.7) 0 48px, transparent 48px 112px);
+  background-image: repeating-linear-gradient(90deg, rgb(239 70 80 / 0.7) 0 48px, transparent 48px 112px);
   animation: gm-road 0.45s linear infinite;
 }
 .hero-anim .gm-skyline {

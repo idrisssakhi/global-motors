@@ -29,7 +29,7 @@ export function Hero() {
             <span className="animate-fade-up block" style={{ animationDelay: '0.08s' }}>
               {t('heroTitleA')}
             </span>
-            <span className="text-gold animate-fade-up block pb-2" style={{ animationDelay: '0.18s' }}>
+            <span className="text-brand animate-fade-up block pb-2" style={{ animationDelay: '0.18s' }}>
               {t('heroTitleB')}
             </span>
           </h1>
@@ -39,7 +39,7 @@ export function Hero() {
           </p>
 
           <div className="animate-fade-up mt-8 flex flex-col gap-3 sm:flex-row" style={{ animationDelay: '0.36s' }}>
-            <Link href="/voitures" className="btn-gold">
+            <Link href="/voitures" className="btn-primary">
               {t('heroPrimary')}
               <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
             </Link>

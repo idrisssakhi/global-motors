@@ -35,7 +35,7 @@ export function CarGallery({ images, alt }: { images: string[]; alt: string }) {
   if (count === 0) {
     return (
       <div className="grid aspect-[16/10] place-items-center rounded-3xl border border-white/[0.07] bg-surface opacity-40">
-        <Logo height={64} />
+        <Logo variant="stacked" height={140} />
       </div>
     );
   }

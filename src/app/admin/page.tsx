@@ -72,7 +72,7 @@ export default async function AdminDashboard() {
           </div>
           <Link
             href="/admin/cars/new"
-            className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 font-semibold text-canvas transition-colors hover:bg-accent-600"
+            className="inline-flex items-center gap-2 rounded-full bg-accent-600 px-5 py-2.5 font-semibold text-white transition-colors hover:bg-accent-700"
           >
             <Plus className="h-5 w-5" aria-hidden />
             Ajouter un véhicule

@@ -85,9 +85,9 @@ export function ProcessRoute() {
           <div className="glass relative overflow-hidden rounded-3xl p-6">
             <svg viewBox="0 0 420 500" className="h-auto w-full" style={{ direction: 'ltr' }} role="img" aria-label={`${t('routeFrom')} → ${t('routePort')} → ${t('routeTo')}`}>
               <defs>
-                <linearGradient id="route-gold" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#f1d49a" />
-                  <stop offset="1" stopColor="#c4923a" />
+                <linearGradient id="route-red" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stopColor="#ff6b73" />
+                  <stop offset="1" stopColor="#d4101b" />
                 </linearGradient>
                 <pattern id="dots" width="14" height="14" patternUnits="userSpaceOnUse">
                   <circle cx="1.5" cy="1.5" r="1.2" fill="rgb(255 255 255 / 0.09)" />
@@ -115,7 +115,7 @@ export function ProcessRoute() {
               <motion.path
                 d={ROUTE}
                 fill="none"
-                stroke="url(#route-gold)"
+                stroke="url(#route-red)"
                 strokeWidth="2.6"
                 strokeLinecap="round"
                 style={{ pathLength: reduce ? 1 : draw }}
@@ -123,15 +123,15 @@ export function ProcessRoute() {
 
               {!reduce && (
                 <motion.g style={{ offsetPath: `path('${ROUTE}')`, offsetDistance: shipDistance, offsetRotate: '0deg' }}>
-                  <circle r="9" fill="#07080b" stroke="#d9a94e" strokeWidth="2" />
-                  <circle r="3" fill="#f1d49a" />
+                  <circle r="9" fill="#07080b" stroke="#d4101b" strokeWidth="2" />
+                  <circle r="3" fill="#ffffff" />
                 </motion.g>
               )}
 
               {NODES.map((n, i) => (
                 <g key={n.key}>
-                  <circle cx={n.x} cy={n.y} r="14" fill="rgb(217 169 78 / 0.12)" />
-                  <circle cx={n.x} cy={n.y} r="5" fill="#d9a94e" />
+                  <circle cx={n.x} cy={n.y} r="14" fill="rgb(212 16 27 / 0.16)" />
+                  <circle cx={n.x} cy={n.y} r="5" fill="#ef4650" />
                   <text
                     x={n.x + (i === 2 ? -22 : 22)}
                     y={n.y + 5}

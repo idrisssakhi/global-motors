@@ -1,73 +1,35 @@
 import { SITE } from '@/lib/site';
+import { BRAND_RED, LOGO, type LogoVariant } from './logoPaths';
 
 /**
- * SKH Global Motors wordmark — inline SVG so it stays crisp, themable and
- * weightless. A gold hexagon monogram + stacked "GLOBAL MOTORS" lettering.
+ * SKH Global Motors logo — inline SVG traced from the official artwork so it
+ * stays crisp at any size. The globe/ribbon/lettering that is black in print
+ * switches to white on the dark site (`tone="dark"`, the default).
  */
 export function Logo({
+  variant = 'horizontal',
+  tone = 'dark',
   height = 36,
   className,
 }: {
+  variant?: LogoVariant;
+  /** Background the logo sits on. */
+  tone?: 'dark' | 'light';
   height?: number;
   className?: string;
 }) {
+  const art = LOGO[variant];
   return (
     <svg
       role="img"
       aria-label={SITE.name}
-      viewBox="0 0 212 48"
+      viewBox={art.viewBox}
       height={height}
       style={{ width: 'auto', direction: 'ltr' }}
       className={className}
     >
-      <defs>
-        <linearGradient id="gm-gold" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#f6e1b0" />
-          <stop offset="0.5" stopColor="#d9a94e" />
-          <stop offset="1" stopColor="#a8772a" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M24 2 43 13v22L24 46 5 35V13z"
-        fill="none"
-        stroke="url(#gm-gold)"
-        strokeWidth="2.2"
-      />
-      <path d="M24 9.5 36.5 16.7v14.6L24 38.5 11.5 31.3V16.7z" fill="url(#gm-gold)" opacity="0.12" />
-      <text
-        x="24"
-        y="29.5"
-        textAnchor="middle"
-        fontFamily="var(--font-sora), system-ui, sans-serif"
-        fontWeight="800"
-        fontSize="13"
-        letterSpacing="0.5"
-        fill="url(#gm-gold)"
-      >
-        SKH
-      </text>
-      <text
-        x="56"
-        y="22"
-        fontFamily="var(--font-sora), system-ui, sans-serif"
-        fontWeight="700"
-        fontSize="16.5"
-        letterSpacing="3.2"
-        fill="#ffffff"
-      >
-        GLOBAL
-      </text>
-      <text
-        x="56"
-        y="40"
-        fontFamily="var(--font-sora), system-ui, sans-serif"
-        fontWeight="300"
-        fontSize="12.5"
-        letterSpacing="6.1"
-        fill="#d9a94e"
-      >
-        MOTORS
-      </text>
+      <path fillRule="evenodd" fill={BRAND_RED} d={art.red} />
+      <path fillRule="evenodd" fill={tone === 'dark' ? '#ffffff' : '#000000'} d={art.dark} />
     </svg>
   );
 }

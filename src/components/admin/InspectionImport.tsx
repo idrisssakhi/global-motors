@@ -346,7 +346,7 @@ export function InspectionImport({
                             className="h-full w-full object-cover"
                           />
                           {on && (
-                            <span className="absolute right-1.5 top-1.5 grid h-6 w-6 place-items-center rounded-full bg-accent text-canvas">
+                            <span className="absolute right-1.5 top-1.5 grid h-6 w-6 place-items-center rounded-full bg-accent-600 text-white">
                               <Check className="h-4 w-4" aria-hidden />
                             </span>
                           )}
@@ -376,7 +376,7 @@ export function InspectionImport({
           <button
             type="button"
             onClick={confirm}
-            className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-canvas transition-colors hover:bg-accent-600"
+            className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-accent-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-accent-700"
           >
             <ImagePlus className="h-5 w-5" aria-hidden />
             Pré-remplir la fiche ({selected.size} photo{selected.size > 1 ? 's' : ''})

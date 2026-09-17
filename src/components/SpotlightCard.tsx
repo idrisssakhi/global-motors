@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 
-/** Card with a soft gold light that follows the pointer. */
+/** Card with a soft red light that follows the pointer. */
 export function SpotlightCard({
   children,
   className = '',
@@ -23,7 +23,7 @@ export function SpotlightCard({
         className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{
           background:
-            'radial-gradient(420px circle at var(--x, 50%) var(--y, 50%), rgb(217 169 78 / 0.12), transparent 45%)',
+            'radial-gradient(420px circle at var(--x, 50%) var(--y, 50%), rgb(212 16 27 / 0.14), transparent 45%)',
         }}
         aria-hidden
       />

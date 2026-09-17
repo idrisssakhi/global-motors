@@ -54,7 +54,7 @@ export function CarCard({
           </>
         ) : (
           <div className="grid h-full place-items-center opacity-30">
-            <Logo height={44} />
+            <Logo variant="mark" height={56} />
           </div>
         )}
 
@@ -85,7 +85,7 @@ export function CarCard({
           </span>
         )}
 
-        <span className="absolute bottom-3 end-3 grid h-10 w-10 translate-y-2 place-items-center rounded-full bg-accent text-canvas opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
+        <span className="absolute bottom-3 end-3 grid h-10 w-10 translate-y-2 place-items-center rounded-full bg-accent-600 text-white opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
           <ArrowUpRight className="h-5 w-5 rtl:-scale-x-100" aria-hidden />
         </span>
       </div>

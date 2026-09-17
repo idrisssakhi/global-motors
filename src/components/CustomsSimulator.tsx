@@ -41,7 +41,7 @@ const FUELS: { key: CustomsFuel; label: 'fuelEssence' | 'fuelHybride' | 'fuelEle
 
 const SEGMENT_COLORS = {
   vehicle: '#3b414e',
-  dd: '#d9a94e',
+  dd: '#d4101b',
   cs: '#7fb7a8',
   prct: '#9b8cd9',
   tva: '#e07a5f',
@@ -335,7 +335,7 @@ export function CustomsSimulator({
                   aria-pressed={currency === c}
                   onClick={() => setCurrency(c)}
                   className={`cursor-pointer rounded-full px-3 py-1 transition-colors ${
-                    currency === c ? 'bg-accent text-canvas' : 'text-muted hover:text-white'
+                    currency === c ? 'bg-accent-600 text-white' : 'text-muted hover:text-white'
                   }`}
                 >
                   {c === 'dzd' ? 'DA' : '€'}

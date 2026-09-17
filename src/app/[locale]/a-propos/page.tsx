@@ -97,7 +97,7 @@ export default async function AboutPage({
                 </div>
               ))}
             </dl>
-            <Link href="/contact" className="btn-gold mt-10">
+            <Link href="/contact" className="btn-primary mt-10">
               {t('ctaButton')}
               <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
             </Link>

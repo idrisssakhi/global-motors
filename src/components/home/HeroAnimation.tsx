@@ -3,7 +3,7 @@ import { GOLF } from './golfPaths';
 
 /**
  * Lightweight, CSS/SVG-only hero scene (no WebGL): a Volkswagen Golf VIII,
- * traced from a real photo, is drawn in gold line-art and drives along a road
+ * traced from a real photo, is drawn in brand-red line-art and drives along a road
  * while the Paris → Marseille → Alger skyline scrolls behind it. Everything is
  * transform/opacity animation and stops for prefers-reduced-motion
  * (globals.css). The scene mirrors in RTL so the car drives in reading order.
@@ -62,53 +62,55 @@ export function HeroAnimation({
           </div>
         </div>
 
-        {/* HUD chips (not mirrored, so text stays readable) */}
-        <div className="glass gm-float absolute end-[6%] top-[12%] hidden items-center gap-3 rounded-2xl px-4 py-3 sm:flex">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent/15 text-accent">
-            <Ship className="h-4 w-4" />
-          </span>
-          <div>
-            <p className="text-[11px] uppercase tracking-[0.18em] text-muted">{labels.export}</p>
-            <p className="font-display text-sm font-semibold text-white">{labels.route}</p>
-            <div className="relative mt-1.5 h-px w-28 bg-white/15">
-              <span className="gm-route-dot absolute -top-[3px] h-[7px] w-[7px] rounded-full bg-accent shadow-[0_0_10px_rgb(217_169_78)]" />
+        {/* HUD chips, stacked in the top corner (not mirrored, so text stays readable) */}
+        <div className="absolute end-[6%] top-[12%] hidden flex-col items-stretch gap-3 sm:flex">
+          <div className="glass gm-float flex items-center gap-3 rounded-2xl px-4 py-3">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent/15 text-accent">
+              <Ship className="h-4 w-4" />
+            </span>
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.18em] text-muted">{labels.export}</p>
+              <p className="font-display text-sm font-semibold text-white">{labels.route}</p>
+              <div className="relative mt-1.5 h-px w-28 bg-white/15">
+                <span className="gm-route-dot absolute -top-[3px] h-[7px] w-[7px] rounded-full bg-accent shadow-[0_0_10px_rgb(239_70_80)]" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          className="glass gm-float absolute bottom-[23%] start-[4%] hidden items-center gap-3 rounded-2xl px-4 py-3 sm:flex"
-          style={{ animationDelay: '1.5s' }}
-        >
-          <svg viewBox="0 0 100 60" className="h-10 w-16" style={{ direction: 'ltr' }}>
-            <path d="M12 54 A38 38 0 0 1 88 54" fill="none" stroke="rgb(255 255 255 / 0.12)" strokeWidth="6" strokeLinecap="round" />
-            <path
-              d="M12 54 A38 38 0 0 1 88 54"
-              fill="none"
-              stroke="#d9a94e"
-              strokeWidth="6"
-              strokeLinecap="round"
-              pathLength={1}
-              strokeDasharray="0.72 1"
-            />
-            <line
-              className="gm-needle"
-              x1="50"
-              y1="54"
-              x2="50"
-              y2="22"
-              stroke="#f6e1b0"
-              strokeWidth="3"
-              strokeLinecap="round"
-              style={{ transformOrigin: '50px 54px', transformBox: 'view-box' }}
-            />
-            <circle cx="50" cy="54" r="5" fill="#d9a94e" />
-          </svg>
-          <div>
-            <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-muted">
-              <Gauge className="h-3 w-3" /> {labels.sim}
-            </p>
-            <p className="font-display text-sm font-semibold text-white">{labels.simValue}</p>
+          <div
+            className="glass gm-float flex items-center gap-3 rounded-2xl px-4 py-3"
+            style={{ animationDelay: '1.5s' }}
+          >
+            <svg viewBox="0 0 100 60" className="h-10 w-16" style={{ direction: 'ltr' }}>
+              <path d="M12 54 A38 38 0 0 1 88 54" fill="none" stroke="rgb(255 255 255 / 0.12)" strokeWidth="6" strokeLinecap="round" />
+              <path
+                d="M12 54 A38 38 0 0 1 88 54"
+                fill="none"
+                stroke="#d4101b"
+                strokeWidth="6"
+                strokeLinecap="round"
+                pathLength={1}
+                strokeDasharray="0.72 1"
+              />
+              <line
+                className="gm-needle"
+                x1="50"
+                y1="54"
+                x2="50"
+                y2="22"
+                stroke="#ffffff"
+                strokeWidth="3"
+                strokeLinecap="round"
+                style={{ transformOrigin: '50px 54px', transformBox: 'view-box' }}
+              />
+              <circle cx="50" cy="54" r="5" fill="#d4101b" />
+            </svg>
+            <div>
+              <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.18em] text-muted">
+                <Gauge className="h-3 w-3" /> {labels.sim}
+              </p>
+              <p className="font-display text-sm font-semibold text-white">{labels.simValue}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -130,14 +132,14 @@ function CarSvg() {
           <stop offset="0.55" stopColor="#0e1520" />
           <stop offset="1" stopColor="#070b12" />
         </linearGradient>
-        <linearGradient id="hc-gold" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#a8772a" />
-          <stop offset="0.5" stopColor="#f1d49a" />
-          <stop offset="1" stopColor="#d9a94e" />
+        <linearGradient id="hc-red" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#8f0a12" />
+          <stop offset="0.5" stopColor="#ff5a63" />
+          <stop offset="1" stopColor="#d4101b" />
         </linearGradient>
         <linearGradient id="hc-beam" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#f6e1b0" stopOpacity="0.5" />
-          <stop offset="1" stopColor="#f6e1b0" stopOpacity="0" />
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.45" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
         </linearGradient>
         <radialGradient id="hc-rim">
           <stop offset="0" stopColor="#4a505e" />
@@ -166,13 +168,13 @@ function CarSvg() {
           pathLength={1}
           d={GOLF.body}
           fill="url(#hc-body)"
-          stroke="url(#hc-gold)"
+          stroke="url(#hc-red)"
           strokeWidth="2.6"
           strokeLinejoin="round"
           filter="url(#hc-glow)"
         />
       </g>
-      <path className="gm-draw" pathLength={1} d={GOLF.bottom} stroke="url(#hc-gold)" strokeWidth="2.6" strokeLinecap="round" filter="url(#hc-glow)" />
+      <path className="gm-draw" pathLength={1} d={GOLF.bottom} stroke="url(#hc-red)" strokeWidth="2.6" strokeLinecap="round" filter="url(#hc-glow)" />
 
       {GOLF.windows.map((d) => (
         <path
@@ -181,7 +183,7 @@ function CarSvg() {
           pathLength={1}
           d={d}
           fill="url(#hc-glass)"
-          stroke="url(#hc-gold)"
+          stroke="url(#hc-red)"
           strokeWidth="1.6"
           strokeLinejoin="round"
           style={{ animationDelay: '0.5s, 1.9s' }}
@@ -193,7 +195,7 @@ function CarSvg() {
       <g
         className="gm-draw"
         fill="none"
-        stroke="#d9a94e"
+        stroke="#bdbcbc"
         strokeOpacity="0.6"
         strokeWidth="1.5"
         strokeLinecap="round"
@@ -210,7 +212,7 @@ function CarSvg() {
       <g
         className="gm-draw"
         fill="none"
-        stroke="#f1d49a"
+        stroke="#ffffff"
         strokeOpacity="0.4"
         strokeWidth="1.1"
         strokeLinecap="round"
@@ -220,20 +222,20 @@ function CarSvg() {
           <path key={d.slice(0, 16)} pathLength={1} d={d} />
         ))}
       </g>
-      <g className="gm-fill" fill="none" stroke="#d9a94e" strokeOpacity="0.55" strokeWidth="1.6" strokeLinecap="round">
+      <g className="gm-fill" fill="none" stroke="#bdbcbc" strokeOpacity="0.55" strokeWidth="1.6" strokeLinecap="round">
         {GOLF.details.map((d) => (
           <path key={d.slice(0, 16)} d={d} />
         ))}
       </g>
 
       {GOLF.handles.map((d) => (
-        <path key={d.slice(0, 16)} className="gm-fill" d={d} fill="#1d212b" stroke="#d9a94e" strokeOpacity="0.8" strokeWidth="1" />
+        <path key={d.slice(0, 16)} className="gm-fill" d={d} fill="#1d212b" stroke="#bdbcbc" strokeOpacity="0.8" strokeWidth="1" />
       ))}
-      <path className="gm-fill" d={GOLF.mirror} fill="#141821" stroke="#d9a94e" strokeWidth="1.2" />
+      <path className="gm-fill" d={GOLF.mirror} fill="#141821" stroke="#bdbcbc" strokeWidth="1.2" />
 
       {/* Lights */}
-      <path className="gm-light" d={GOLF.headlight} fill="#f6e1b0" filter="url(#hc-glow)" />
-      <path d={GOLF.taillight} fill="#c0392b" opacity="0.92" />
+      <path className="gm-light" d={GOLF.headlight} fill="#ffffff" filter="url(#hc-glow)" />
+      <path d={GOLF.taillight} fill="#d4101b" opacity="0.92" />
 
       {GOLF.wheels.map((w) => (
         <Wheel key={w.cx} cx={w.cx} cy={w.cy} r={w.r} rim={w.rim} />
@@ -251,22 +253,22 @@ function Wheel({ cx, cy, r, rim }: { cx: number; cy: number; r: number; rim: num
       <circle cx={cx} cy={cy} r={r} fill="#0a0b0f" stroke="#2c313c" strokeWidth="2" />
       <circle cx={cx} cy={cy} r={r - 8} fill="none" stroke="#1c2029" strokeWidth="1.5" />
       <g className="gm-spin" style={{ transformOrigin: `${cx}px ${cy}px`, transformBox: 'view-box' }}>
-        <circle cx={cx} cy={cy} r={rim} fill="url(#hc-rim)" stroke="url(#hc-gold)" strokeWidth="1.8" />
+        <circle cx={cx} cy={cy} r={rim} fill="url(#hc-rim)" stroke="url(#hc-red)" strokeWidth="1.8" />
         {[0, 72, 144, 216, 288].map((a) => (
           <path
             key={a}
             transform={`rotate(${a} ${cx} ${cy})`}
             d={`M${cx - 4} ${cy - 10} Q${cx + 8} ${cy - rim * 0.55} ${cx + 2} ${cy - rim + 3} M${cx + 4} ${cy - 10} Q${cx + 18} ${cy - rim * 0.52} ${cx + 13} ${cy - rim + 4}`}
             fill="none"
-            stroke="#e2c07a"
+            stroke="#d7d7d7"
             strokeWidth="3"
             strokeLinecap="round"
             opacity="0.9"
           />
         ))}
-        <circle cx={cx} cy={cy} r={rim - 3} fill="none" stroke="#d9a94e" strokeOpacity="0.35" strokeWidth="1" />
-        <circle cx={cx} cy={cy} r={11} fill="#1a1e27" stroke="#d9a94e" strokeWidth="1.5" />
-        <circle cx={cx} cy={cy} r={4} fill="#f1d49a" />
+        <circle cx={cx} cy={cy} r={rim - 3} fill="none" stroke="#bdbcbc" strokeOpacity="0.35" strokeWidth="1" />
+        <circle cx={cx} cy={cy} r={11} fill="#1a1e27" stroke="#d4101b" strokeWidth="1.5" />
+        <circle cx={cx} cy={cy} r={4} fill="#ef4650" />
       </g>
     </g>
   );
@@ -276,7 +278,7 @@ function Wheel({ cx, cy, r, rim }: { cx: number; cy: number; r: number; rim: num
 function Skyline() {
   return (
     <svg viewBox="0 0 800 120" preserveAspectRatio="none" className="h-full w-1/2">
-      <g fill="none" stroke="rgb(217 169 78 / 0.32)" strokeWidth="1.3" strokeLinejoin="round">
+      <g fill="none" stroke="rgb(189 188 188 / 0.28)" strokeWidth="1.3" strokeLinejoin="round">
         <path d="M0 119.5 H800" />
         {/* Paris */}
         <path d="M10 120 V88 H34 V120 M40 120 V70 H62 V120 M66 120 V96 H90 V120" />

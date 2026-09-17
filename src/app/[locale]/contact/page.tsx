@@ -81,7 +81,7 @@ export default async function ContactPage({
                   loading="lazy"
                   className="h-72 w-full [filter:invert(0.92)_hue-rotate(180deg)_saturate(0.6)_brightness(0.9)]"
                 />
-                <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="btn-gold absolute bottom-4 end-4 !px-4 !py-2 text-sm">
+                <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="btn-primary absolute bottom-4 end-4 !px-4 !py-2 text-sm">
                   <Navigation className="h-4 w-4" aria-hidden />
                   {t('directions')}
                 </a>

@@ -66,7 +66,7 @@ export function AdminNav({ newLeads = 0 }: { newLeads?: number }) {
                   {label}
                   {href === '/admin/leads' && newLeads > 0 && (
                     <span
-                      className="rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-bold leading-none text-canvas"
+                      className="rounded-full bg-accent-600 px-1.5 py-0.5 text-[11px] font-bold leading-none text-white"
                       aria-label={`${newLeads} nouvelle(s) demande(s)`}
                     >
                       {newLeads}

@@ -209,7 +209,7 @@ export default async function CarDetailPage({
               {(wa || SITE.phone) && (
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
                   {wa && (
-                    <a href={wa} target="_blank" rel="noopener noreferrer" className="btn-gold text-sm">
+                    <a href={wa} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm">
                       <MessageCircle className="h-4 w-4" aria-hidden /> {t('whatsapp')}
                     </a>
                   )}
