@@ -79,14 +79,19 @@ export function filterCars<T extends CarSummary>(cars: T[], f: CarFilters): T[] 
 
   switch (f.sort) {
     case 'price-asc':
-      return out.sort((a, b) => a.price_eur - b.price_eur);
+      out.sort((a, b) => a.price_eur - b.price_eur);
+      break;
     case 'price-desc':
-      return out.sort((a, b) => b.price_eur - a.price_eur);
+      out.sort((a, b) => b.price_eur - a.price_eur);
+      break;
     case 'km-asc':
-      return out.sort((a, b) => a.mileage_km - b.mileage_km);
+      out.sort((a, b) => a.mileage_km - b.mileage_km);
+      break;
     case 'year-desc':
-      return out.sort((a, b) => b.year - a.year);
-    default:
-      return out;
+      out.sort((a, b) => b.year - a.year);
+      break;
   }
+  // Sold cars stay listed (with a "Vendu" stamp) but always after the others.
+  // Array#sort is stable, so the order chosen above is kept within each group.
+  return out.sort((a, b) => Number(a.status === 'vendu') - Number(b.status === 'vendu'));
 }

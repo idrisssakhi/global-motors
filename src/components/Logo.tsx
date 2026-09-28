@@ -10,19 +10,21 @@ export function Logo({
   variant = 'horizontal',
   tone = 'dark',
   height = 36,
+  decorative = false,
   className,
 }: {
   variant?: LogoVariant;
   /** Background the logo sits on. */
   tone?: 'dark' | 'light';
   height?: number;
+  /** Placeholder use (no photo…): hidden from assistive tech. */
+  decorative?: boolean;
   className?: string;
 }) {
   const art = LOGO[variant];
   return (
     <svg
-      role="img"
-      aria-label={SITE.name}
+      {...(decorative ? { 'aria-hidden': true } : { role: 'img', 'aria-label': SITE.name })}
       viewBox={art.viewBox}
       height={height}
       style={{ width: 'auto', direction: 'ltr' }}

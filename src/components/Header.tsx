@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X, Calculator, Phone } from 'lucide-react';
@@ -9,6 +9,7 @@ import { Link, usePathname } from '@/i18n/navigation';
 import { SITE } from '@/lib/site';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { Logo } from './Logo';
+import { MotionToggle } from './MotionToggle';
 
 const links = [
   { href: '/voitures', key: 'cars' },
@@ -17,11 +18,16 @@ const links = [
   { href: '/contact', key: 'contact' },
 ] as const;
 
+const FOCUSABLE = 'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export function Header() {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -38,16 +44,58 @@ export function Header() {
     };
   }, [open]);
 
+  // Mobile menu keyboard support: focus the first link, keep Tab inside the
+  // header while the overlay covers the page, Escape closes it.
+  useEffect(() => {
+    if (!open) return;
+    const toggle = toggleRef.current;
+    const frame = requestAnimationFrame(() => panelRef.current?.querySelector<HTMLElement>('a[href]')?.focus());
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        toggle?.focus();
+        return;
+      }
+      if (e.key !== 'Tab' || !headerRef.current) return;
+      const items = Array.from(headerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+        (el) => !el.dataset.skip && el.getClientRects().length > 0
+      );
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      cancelAnimationFrame(frame);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
   const isActive = (href: string) => pathname.startsWith(href);
 
   return (
     <header
+      ref={headerRef}
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
         scrolled || open
           ? 'border-b border-white/[0.06] bg-canvas/75 backdrop-blur-xl'
           : 'border-b border-transparent bg-transparent'
       }`}
     >
+      <a
+        href="#main"
+        data-skip="true"
+        className="btn-primary sr-only !fixed start-4 top-4 z-[60] focus:not-sr-only focus:!px-5 focus:!py-2.5 focus:text-sm"
+      >
+        {t('skip')}
+      </a>
       <div
         className={`container-x flex items-center justify-between gap-4 transition-[height] duration-500 ${
           scrolled ? 'h-16' : 'h-20'
@@ -67,6 +115,7 @@ export function Header() {
             <Link
               key={l.href}
               href={l.href}
+              aria-current={isActive(l.href) ? 'page' : undefined}
               className={`group relative rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                 isActive(l.href) ? 'text-accent' : 'text-ink/80 hover:text-white'
               }`}
@@ -86,12 +135,13 @@ export function Header() {
             <a
               href={SITE.phoneHref}
               className="hidden items-center gap-2 text-sm font-medium text-ink/85 transition-colors hover:text-accent xl:inline-flex"
-              aria-label={t('call')}
+              aria-label={`${t('call')} ${SITE.phone}`}
             >
               <Phone className="h-4 w-4 text-accent" aria-hidden />
               <span dir="ltr">{SITE.phone}</span>
             </a>
           )}
+          <MotionToggle />
           <LanguageSwitcher />
           <Link href="/simulateur-dedouanement" className="btn-primary !px-5 !py-2.5 text-sm">
             <Calculator className="h-4 w-4" aria-hidden />
@@ -100,11 +150,13 @@ export function Header() {
         </div>
 
         <button
+          ref={toggleRef}
           type="button"
           className="relative z-10 inline-flex cursor-pointer items-center justify-center rounded-full border border-white/15 p-2.5 text-white lg:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? t('close') : t('menu')}
           aria-expanded={open}
+          aria-controls="mobile-menu"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -113,6 +165,8 @@ export function Header() {
       <AnimatePresence>
         {open && (
           <motion.div
+            ref={panelRef}
+            id="mobile-menu"
             className="fixed inset-0 top-0 -z-0 flex h-dvh flex-col bg-canvas/95 px-6 pb-10 pt-28 backdrop-blur-2xl lg:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -130,6 +184,7 @@ export function Header() {
                   <Link
                     href={l.href}
                     onClick={() => setOpen(false)}
+                    aria-current={(l.href === '/' ? pathname === '/' : isActive(l.href)) ? 'page' : undefined}
                     className={`font-display block border-b border-white/[0.06] py-4 text-3xl font-semibold tracking-tight ${
                       (l.href === '/' ? pathname === '/' : isActive(l.href))
                         ? 'text-accent'
@@ -142,6 +197,7 @@ export function Header() {
               ))}
             </nav>
             <div className="mt-auto flex items-center justify-between gap-3">
+              <MotionToggle />
               <LanguageSwitcher />
               <Link
                 href="/simulateur-dedouanement"

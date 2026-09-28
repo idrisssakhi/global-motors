@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle2, Loader2, Send } from 'lucide-react';
 
+import { Link } from '@/i18n/navigation';
 import { submitLead, type LeadSubmission } from '@/app/actions/lead';
 import type { LeadKind } from '@/lib/types';
 
@@ -28,6 +29,12 @@ export function LeadForm({
   const [pending, startTransition] = useTransition();
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const doneRef = useRef<HTMLDivElement>(null);
+
+  // The form is replaced by the confirmation: move focus there so it isn't lost.
+  useEffect(() => {
+    if (done) doneRef.current?.focus();
+  }, [done]);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -56,9 +63,11 @@ export function LeadForm({
         {done ? (
           <motion.div
             key="done"
+            ref={doneRef}
+            tabIndex={-1}
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center py-10 text-center"
+            className="flex flex-col items-center py-10 text-center outline-none"
             role="status"
           >
             <span className="relative grid h-16 w-16 place-items-center rounded-full bg-accent/15 text-accent">
@@ -78,22 +87,23 @@ export function LeadForm({
             {title && (
               <p className="font-display mb-2 text-lg font-semibold text-white">{title}</p>
             )}
+            <p className="text-xs text-muted">{t('required')}</p>
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="block">
-                <span className="sr-only">{t('name')}</span>
-                <input name="name" required minLength={2} maxLength={120} autoComplete="name" placeholder={t('name')} className="field" />
+                <span className="mb-1.5 block text-sm font-medium text-white">{t('name')} <span aria-hidden className="text-accent">*</span></span>
+                <input name="name" required minLength={2} maxLength={120} autoComplete="name" className="field" />
               </label>
               <label className="block">
-                <span className="sr-only">{t('phone')}</span>
-                <input name="phone" type="tel" required maxLength={40} autoComplete="tel" placeholder={t('phone')} className="field" dir="ltr" />
+                <span className="mb-1.5 block text-sm font-medium text-white">{t('phone')} <span aria-hidden className="text-accent">*</span></span>
+                <input name="phone" type="tel" required maxLength={40} autoComplete="tel" className="field" dir="ltr" />
               </label>
             </div>
             <label className="block">
-              <span className="sr-only">{t('email')}</span>
-              <input name="email" type="email" maxLength={200} autoComplete="email" placeholder={t('email')} className="field" dir="ltr" />
+              <span className="mb-1.5 block text-sm font-medium text-white">{t('email')}</span>
+              <input name="email" type="email" maxLength={200} autoComplete="email" className="field" dir="ltr" />
             </label>
             <label className="block">
-              <span className="sr-only">{t('message')}</span>
+              <span className="mb-1.5 block text-sm font-medium text-white">{t('message')}</span>
               <textarea
                 name="message"
                 rows={3}
@@ -116,7 +126,15 @@ export function LeadForm({
               {pending ? <Loader2 className="h-5 w-5 animate-spin" aria-hidden /> : <Send className="h-4 w-4 rtl:-scale-x-100" aria-hidden />}
               {pending ? t('sending') : t('submit')}
             </button>
-            <p className="text-center text-[11px] text-muted/80">{t('consent')}</p>
+            <p className="text-center text-xs text-muted">
+              {t.rich('consent', {
+                link: (chunks) => (
+                  <Link href="/confidentialite" className="underline underline-offset-2 hover:text-accent">
+                    {chunks}
+                  </Link>
+                ),
+              })}
+            </p>
           </motion.form>
         )}
       </AnimatePresence>

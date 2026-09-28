@@ -15,7 +15,7 @@ const BRANDS = [
   'Škoda',
 ];
 
-/** Infinite, CSS-only brand ticker (reverses in RTL, stops for reduced motion). */
+/** Infinite, CSS-only brand ticker (reverses in RTL, stops for reduced motion or the header pause toggle). */
 export function BrandMarquee({ title }: { title: string }) {
   const row = [...BRANDS, ...BRANDS];
   return (
@@ -29,7 +29,7 @@ export function BrandMarquee({ title }: { title: string }) {
             <li
               key={`${b}-${i}`}
               aria-hidden={i >= BRANDS.length}
-              className="font-display whitespace-nowrap text-2xl font-semibold tracking-tight text-white/25 transition-colors hover:text-accent sm:text-3xl"
+              className="font-display whitespace-nowrap text-2xl font-semibold tracking-tight text-white/45 transition-colors hover:text-accent sm:text-3xl"
             >
               {b}
             </li>

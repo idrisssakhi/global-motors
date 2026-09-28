@@ -37,7 +37,41 @@ export const SITE = {
     apeLabel: 'Commerce de voitures et de véhicules automobiles légers',
     foundingDate: '2025-09-09',
     president: 'HOLDING SKH',
+    rcs: 'RCS Pontoise 991 121 880',
+    capital: '', // TODO: montant du capital social, ex. '1 000 €' (obligatoire, LCEN art. 1-1)
+    /** Natural person responsible for the content (LCEN) — usually HOLDING SKH's legal representative. */
+    publicationDirector: '', // TODO: 'Prénom Nom, représentant légal de HOLDING SKH'
+    /**
+     * Consumer mediator (Code de la consommation L612-1) — mandatory for any
+     * professional selling to consumers. Leave empty until a membership is signed.
+     */
+    mediator: { name: '', address: '', url: '' },
   },
+
+  /** Web host (LCEN art. 1-1) and data processors listed in the privacy policy. */
+  hosting: {
+    name: 'Railway Corporation',
+    address: '548 Market St PMB 68956, San Francisco, CA 94104, États-Unis',
+    url: 'https://railway.com',
+    contact: 'privacy@railway.com',
+  },
+  dataHost: {
+    name: 'Supabase Pte. Ltd.',
+    location: 'Union européenne (Irlande, région eu-west-1)',
+    url: 'https://supabase.com',
+  },
+
+  /** How long visitor requests are kept (months) — must match the purge job in supabase/migrations. */
+  leadRetentionMonths: 36,
+  /** Cookie consent is asked again after this many months (CNIL recommendation: 6). */
+  consentMaxAgeMonths: 6,
+  /**
+   * Show the cookie dialog automatically on the first visit. Off by default:
+   * the only optional trackers are click-to-load embeds, which ask for consent
+   * in place, so CNIL does not require a site-wide banner.
+   */
+  cookieBannerOnFirstVisit: false,
+  policiesUpdatedAt: '2026-09-28',
 
   social: {
     instagram: '',

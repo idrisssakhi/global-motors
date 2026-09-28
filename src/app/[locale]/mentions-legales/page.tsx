@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { SITE } from '@/lib/site';
 import { pageMeta } from '@/lib/seo';
+import { LegalSection as Block, RichText } from '@/components/LegalDocument';
 
 export async function generateMetadata({
   params,
@@ -26,13 +27,17 @@ export default async function LegalPage({
   const publisher = [
     [t('company'), SITE.legal.name],
     [t('legalForm'), SITE.legal.legalForm],
-    [t('siren'), SITE.legal.siren],
+    SITE.legal.capital && [t('capital'), SITE.legal.capital],
+    [t('rcs'), SITE.legal.rcs],
     [t('siret'), SITE.legal.siret],
     [t('vat'), SITE.legal.vat],
     [t('ape'), `${SITE.legal.ape} — ${SITE.legal.apeLabel}`],
     [t('address'), `${SITE.address.street}, ${SITE.address.postalCode} ${SITE.address.city}, ${SITE.address.country}`],
+    SITE.phone && [t('phone'), SITE.phone],
+    SITE.email && [t('email'), SITE.email],
     [t('president'), SITE.legal.president],
-  ];
+    [t('director'), SITE.legal.publicationDirector || SITE.legal.president],
+  ].filter(Boolean) as [string, string][];
 
   return (
     <div className="container-x max-w-3xl pb-10 pt-36">
@@ -50,10 +55,19 @@ export default async function LegalPage({
       </Block>
 
       <Block title={t('hosting')}>
-        <p>{t('hostingText')}</p>
+        <p>
+          {SITE.hosting.name} — {SITE.hosting.address} —{' '}
+          <a href={SITE.hosting.url} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+            {SITE.hosting.url.replace(/^https?:\/\//, '')}
+          </a>{' '}
+          — {SITE.hosting.contact}
+        </p>
+        <p>{t('dataHostText', { name: SITE.dataHost.name, location: SITE.dataHost.location })}</p>
       </Block>
       <Block title={t('data')}>
-        <p>{t('dataText')}</p>
+        <p>
+          <RichText text={t('dataText')} />
+        </p>
       </Block>
       <Block title={t('simulator')}>
         <p>{t('simulatorText')}</p>
@@ -71,14 +85,5 @@ export default async function LegalPage({
         </ul>
       </Block>
     </div>
-  );
-}
-
-function Block({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="mt-10">
-      <h2 className="font-display text-xl font-semibold text-white">{title}</h2>
-      <div className="mt-3 leading-relaxed text-muted">{children}</div>
-    </section>
   );
 }

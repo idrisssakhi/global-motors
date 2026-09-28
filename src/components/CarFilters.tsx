@@ -23,7 +23,7 @@ export function CarFilters({
   const hasFilters = Object.entries(current).some(([k, v]) => k !== 'sort' && v);
 
   return (
-    <div className="glass rounded-2xl p-4 sm:p-5">
+    <div className="glass rounded-2xl p-4 sm:p-5" role="search" aria-label={t('filters')}>
       <div className="mb-4 flex items-center justify-between">
         <span className="inline-flex items-center gap-2 text-sm font-semibold text-white">
           <SlidersHorizontal className="h-4 w-4 text-accent" aria-hidden />

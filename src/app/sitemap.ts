@@ -11,6 +11,9 @@ const STATIC_PATHS: { path: string; priority: number; freq: MetadataRoute.Sitema
   { path: '/a-propos', priority: 0.5, freq: 'yearly' },
   { path: '/contact', priority: 0.6, freq: 'yearly' },
   { path: '/mentions-legales', priority: 0.2, freq: 'yearly' },
+  { path: '/confidentialite', priority: 0.2, freq: 'yearly' },
+  { path: '/conditions-utilisation', priority: 0.2, freq: 'yearly' },
+  { path: '/cookies', priority: 0.1, freq: 'yearly' },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

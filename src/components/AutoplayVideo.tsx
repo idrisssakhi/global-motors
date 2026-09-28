@@ -1,12 +1,15 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { motion, type MotionStyle } from 'framer-motion';
+import { motion, useReducedMotion, type MotionStyle } from 'framer-motion';
+import { useMotionPaused } from '@/lib/motion';
 
 /**
- * Muted looping background video. React doesn't serialise `muted` into the
- * SSR markup, which makes some browsers refuse autoplay — so we force it on
- * the element and start playback only while it is on screen.
+ * Muted looping background video (decorative: hidden from assistive tech).
+ * React doesn't serialise `muted` into the SSR markup, which makes some
+ * browsers refuse autoplay — so we force it on the element and start playback
+ * only while it is on screen. Stays on its first frame for reduced-motion
+ * users and when animations are paused from the header (WCAG 2.2.2).
  */
 export function AutoplayVideo({
   src,
@@ -18,11 +21,18 @@ export function AutoplayVideo({
   style?: MotionStyle;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
+  const reduce = useReducedMotion();
+  const paused = useMotionPaused();
+  const still = Boolean(reduce) || paused;
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     el.muted = true;
+    if (still) {
+      el.pause();
+      return;
+    }
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) el.play().catch(() => {});
@@ -32,7 +42,7 @@ export function AutoplayVideo({
     );
     io.observe(el);
     return () => io.disconnect();
-  }, []);
+  }, [still]);
 
   return (
     <motion.video
@@ -44,6 +54,7 @@ export function AutoplayVideo({
       loop
       playsInline
       preload="metadata"
+      disablePictureInPicture
       aria-hidden
     />
   );

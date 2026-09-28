@@ -66,9 +66,11 @@ export function CarList({
     <>
       <CarFilters makes={makes} current={params} onChange={update} />
 
-      <p className="mt-8 text-sm font-medium text-muted">
+      {/* h2 keeps the outline h1 → h2 → h3 (card titles); live so filter
+          results are announced (WCAG 4.1.3). */}
+      <h2 className="mt-8 text-sm font-medium text-muted" aria-live="polite">
         {t(count === 1 ? 'resultsOne' : 'resultsOther', { count })}
-      </p>
+      </h2>
 
       {count > 0 ? (
         <motion.div layout className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

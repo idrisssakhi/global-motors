@@ -35,6 +35,7 @@ import { CustomsSimulator } from '@/components/CustomsSimulator';
 import { LeadForm } from '@/components/LeadForm';
 import { SectionHeading } from '@/components/SectionHeading';
 import { FadeIn } from '@/components/FadeIn';
+import { ConsentEmbed } from '@/components/ConsentEmbed';
 import { JsonLd } from '@/components/JsonLd';
 
 export const revalidate = 86400;
@@ -72,18 +73,18 @@ export default async function CarDetailPage({
   if (!car) notFound();
 
   const loc = locale as Locale;
-  const [t, tf, tg, ts, tl, customs, related] = await Promise.all([
+  const [t, tf, tg, ts, customs, related] = await Promise.all([
     getTranslations('car'),
     getTranslations('fuel'),
     getTranslations('gearbox'),
     getTranslations('status'),
-    getTranslations('lead'),
     getCustomsSettings(),
     getRelatedCars(car),
   ]);
 
   const title = (loc === 'ar' ? car.title_ar : car.title_fr) || `${car.make} ${car.model}`;
   const description = loc === 'ar' ? car.description_ar : car.description_fr;
+  const sold = car.status === 'vendu';
   const under3 = isUnderThreeYears(car.first_registration);
   const ageBracket = ageBracketFromDate(car.first_registration);
   const wa = whatsappLink(t('whatsappMsg', { car: `${car.make} ${car.model}`, year: car.year }));
@@ -123,7 +124,7 @@ export default async function CarDetailPage({
         <div className="mt-6 grid gap-x-10 gap-y-10 lg:grid-cols-[1.45fr_1fr] lg:items-start">
           <div className="min-w-0 space-y-10">
             <div className="animate-fade-up">
-              <CarGallery images={car.images} alt={title} />
+              <CarGallery images={car.images} alt={title} sold={sold} />
             </div>
 
             {video && (
@@ -131,9 +132,11 @@ export default async function CarDetailPage({
                 <h2 className="font-display text-xl font-semibold text-white">{t('video')}</h2>
                 <div className="mt-4 aspect-video overflow-hidden rounded-3xl border border-white/[0.07] bg-surface">
                   {video.kind === 'youtube' ? (
-                    <iframe
+                    <ConsentEmbed
+                      provider="YouTube"
+                      kind="video"
                       src={video.src}
-                      title={title}
+                      title={`${t('video')} — ${title}`}
                       className="h-full w-full"
                       allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
@@ -223,16 +226,15 @@ export default async function CarDetailPage({
             </div>
 
             <div className="glass rounded-3xl p-6 sm:p-7">
-              <p className="font-display text-lg font-semibold text-white">{t('interested')}</p>
-              <p className="mt-1 text-sm text-muted">{t('interestedDesc')}</p>
+              <p className="font-display text-lg font-semibold text-white">{sold ? t('soldTitle') : t('interested')}</p>
+              <p className="mt-1 text-sm text-muted">{sold ? t('soldDesc') : t('interestedDesc')}</p>
               <LeadForm
-                kind="vehicule"
+                kind={sold ? 'recherche' : 'vehicule'}
                 carId={car.id}
                 className="mt-5"
                 defaultMessage={`${car.make} ${car.model} ${car.version ?? ''} (${car.year})`.replace(/\s+/g, ' ')}
                 title={undefined}
               />
-              <span className="sr-only">{tl('titleCar')}</span>
             </div>
           </aside>
         </div>

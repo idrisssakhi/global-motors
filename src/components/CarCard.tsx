@@ -54,14 +54,14 @@ export function CarCard({
           </>
         ) : (
           <div className="grid h-full place-items-center opacity-30">
-            <Logo variant="mark" height={56} />
+            <Logo variant="mark" height={56} decorative />
           </div>
         )}
 
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" aria-hidden />
 
         {isSold && (
-          <div className="absolute inset-0 grid place-items-center bg-black/50">
+          <div className="absolute inset-0 grid place-items-center bg-black/60">
             <span className="-rotate-12 rounded-md border-2 border-white px-4 py-1.5 text-lg font-black uppercase tracking-widest text-white">
               {t('status.vendu')}
             </span>
@@ -74,7 +74,9 @@ export function CarCard({
           )}
           {car.export_dz && (
             <span className="inline-flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-xs font-medium text-white backdrop-blur">
-              <Ship className="h-3 w-3 text-accent" aria-hidden /> DZ
+              <Ship className="h-3 w-3 text-accent" aria-hidden />
+              <span aria-hidden>DZ</span>
+              <span className="sr-only">{t('car.exportEligible')}</span>
             </span>
           )}
         </div>

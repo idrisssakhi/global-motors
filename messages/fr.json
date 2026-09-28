@@ -8,7 +8,10 @@
     "cta": "Estimer mon import",
     "menu": "Menu",
     "close": "Fermer",
-    "call": "Appeler"
+    "call": "Appeler",
+    "skip": "Aller au contenu",
+    "pauseMotion": "Mettre en pause les animations",
+    "playMotion": "Relancer les animations"
   },
   "home": {
     "metaTitle": "SKH Global Motors — Véhicules d’exception en France & export vers l’Algérie",
@@ -161,7 +164,13 @@
     "customsTitle": "Estimation dédouanement Algérie",
     "customsText": "Calcul indicatif pour ce véhicule, pré-rempli avec ses caractéristiques. Ajustez le fret ou le taux de change si besoin.",
     "video": "Vidéo",
-    "photos": "Photos"
+    "photos": "Photos",
+    "photoOf": "photo {index} sur {count}",
+    "enlarge": "Agrandir",
+    "prevPhoto": "Photo précédente",
+    "nextPhoto": "Photo suivante",
+    "soldTitle": "Ce véhicule est vendu",
+    "soldDesc": "Vous cherchez un modèle similaire ? Dites-nous ce qu’il vous faut : nous le trouvons pour vous en France ou en Europe."
   },
   "status": {
     "disponible": "Disponible",
@@ -287,7 +296,7 @@
   "lead": {
     "name": "Nom complet",
     "phone": "Téléphone / WhatsApp",
-    "email": "E-mail (optionnel)",
+    "email": "E-mail (facultatif)",
     "message": "Votre message",
     "messagePlaceholder": "Modèle recherché, budget, délai…",
     "submit": "Envoyer la demande",
@@ -296,11 +305,12 @@
     "successText": "Merci ! Un conseiller SKH Global Motors vous recontacte très rapidement.",
     "error": "L’envoi a échoué. Réessayez ou contactez-nous directement.",
     "invalid": "Merci d’indiquer votre nom et un numéro de téléphone valide.",
-    "consent": "En envoyant ce formulaire, vous acceptez d’être recontacté au sujet de votre demande.",
+    "consent": "Vos données servent uniquement à traiter votre demande et sont conservées 3 ans au plus. <link>Politique de confidentialité</link>",
     "titleContact": "Écrivez-nous",
     "titleCar": "Demander ce véhicule",
     "titleQuote": "Recevoir une offre rendu Alger",
-    "titleSearch": "Recherche personnalisée"
+    "titleSearch": "Recherche personnalisée",
+    "required": "* Champ obligatoire"
   },
   "about": {
     "metaTitle": "À propos",
@@ -341,20 +351,25 @@
     "publisher": "Éditeur du site",
     "company": "Dénomination",
     "legalForm": "Forme juridique",
-    "siren": "SIREN",
     "siret": "SIRET (siège)",
     "vat": "N° TVA intracommunautaire",
     "ape": "Code APE",
     "address": "Siège social",
     "president": "Président",
     "hosting": "Hébergement",
-    "hostingText": "Les coordonnées de l’hébergeur sont communiquées sur simple demande.",
     "data": "Données personnelles",
-    "dataText": "Les informations transmises via nos formulaires (nom, téléphone, e-mail, message) sont utilisées uniquement pour répondre à votre demande et ne sont jamais cédées à des tiers. Vous pouvez demander leur suppression à tout moment en nous contactant.",
+    "dataText": "Le traitement de vos données personnelles est décrit dans notre [politique de confidentialité](/confidentialite) et notre [politique de cookies](/cookies). L’utilisation du site est régie par nos [conditions générales d’utilisation](/conditions-utilisation).",
     "credits": "Crédits médias",
     "simulator": "Simulateur de dédouanement",
     "simulatorText": "Les résultats du simulateur sont fournis à titre indicatif et n’ont aucune valeur contractuelle. Seuls les services des douanes algériennes déterminent le montant exigible.",
-    "metaDescription": "Mentions légales de SKH Global Motors (SAS, SIREN 991 121 880) : éditeur, hébergement, données personnelles et crédits médias."
+    "metaDescription": "Mentions légales de SKH Global Motors (SAS, RCS Pontoise 991 121 880) : éditeur, directeur de la publication, hébergeur, données personnelles et crédits médias.",
+    "capital": "Capital social",
+    "rcs": "Immatriculation",
+    "phone": "Téléphone",
+    "email": "E-mail",
+    "director": "Directeur de la publication",
+    "dataHostText": "Les données des formulaires sont stockées par {name}, dans l’{location}.",
+    "siren": "SIREN"
   },
   "footer": {
     "tagline": "Véhicules récents et premium en France, export clé en main vers l’Algérie.",
@@ -367,7 +382,10 @@
     "legal": "Mentions légales",
     "serviceExport": "Export Algérie",
     "serviceSearch": "Recherche sur mesure",
-    "serviceCustoms": "Estimation douane"
+    "serviceCustoms": "Estimation douane",
+    "privacy": "Confidentialité",
+    "terms": "Conditions d’utilisation",
+    "cookies": "Cookies"
   },
   "common": {
     "loading": "Chargement…",
@@ -377,5 +395,32 @@
     "whatsappLabel": "Discuter sur WhatsApp",
     "whatsappMessage": "Bonjour SKH Global Motors, je souhaite avoir des informations.",
     "followUs": "Suivez-nous"
+  },
+  "legalDocs": {
+    "updated": "Dernière mise à jour : {date}",
+    "toc": "Sommaire"
+  },
+  "consent": {
+    "title": "Vos préférences cookies",
+    "intro": "Nous n’utilisons ni publicité, ni mesure d’audience. Seuls les contenus externes (carte, vidéos) demandent votre accord.",
+    "necessary": "Nécessaires",
+    "necessaryDesc": "Langue du site et mémorisation de votre choix.",
+    "alwaysOn": "Toujours actifs",
+    "external": "Contenus externes",
+    "externalDesc": "Carte OpenStreetMap (page Contact) et vidéos YouTube des fiches véhicules. Ces services reçoivent votre adresse IP.",
+    "allowed": "Autorisés",
+    "blocked": "Bloqués",
+    "undecided": "Non choisi",
+    "acceptAll": "Tout accepter",
+    "rejectAll": "Tout refuser",
+    "policy": "Politique de cookies",
+    "close": "Fermer",
+    "manage": "Gérer les cookies",
+    "embedMap": "Carte fournie par {provider}",
+    "embedVideo": "Vidéo hébergée sur {provider}",
+    "embedText": "L’afficher transmet votre adresse IP à ce service, qui peut déposer des traceurs.",
+    "embedLoad": "Afficher le contenu",
+    "embedRemember": "Choix mémorisé {months} mois, modifiable via « Gérer les cookies ».",
+    "learnMore": "En savoir plus"
   }
 }

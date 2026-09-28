@@ -226,6 +226,7 @@ export function CustomsSimulator({
               onChange={(e) => setEngineCc(e.target.value)}
               className="mt-3 w-full cursor-pointer accent-accent"
               aria-label={t('engineCc')}
+              aria-valuetext={`${formatNumber(input.engineCc, locale)} cm³`}
             />
             <div className="mt-2 flex items-center gap-3">
               <input
@@ -238,8 +239,9 @@ export function CustomsSimulator({
                 onChange={(e) => setEngineCc(e.target.value)}
                 className="field max-w-[9rem]"
                 dir="ltr"
+                aria-describedby="sim-cc-hint"
               />
-              <p className="text-xs text-muted">
+              <p id="sim-cc-hint" className="text-xs text-muted">
                 {regime === 'ccr'
                   ? t('engineHintCcr', { cc: formatNumber(settings.ccr_max_cc, locale) })
                   : t('engineHint', {
@@ -267,6 +269,7 @@ export function CustomsSimulator({
             onChange={(e) => setPrice(e.target.value)}
             className="mt-3 w-full cursor-pointer accent-accent"
             aria-label={t('price')}
+            aria-valuetext={formatPrice(input.priceEur, locale)}
           />
           <NumberField id="sim-price" value={price} onChange={setPrice} suffix="€" hint={t('priceHint')} />
         </div>
@@ -344,15 +347,22 @@ export function CustomsSimulator({
             </div>
           </div>
 
-          <p className="relative mt-5 text-sm text-muted">{r.ccrExempt ? t('ccrDue') : t('netTaxes')}</p>
-          <p className="relative mt-1" aria-live="polite">
-            <AnimatedNumber
-              value={currency === 'dzd' ? r.amountDue : r.amountDueEur}
-              format={(v) => (currency === 'dzd' ? formatDzd(v, locale) : formatPrice(v, locale))}
-              className="font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl"
-            />
-          </p>
-          <p className="relative mt-1 text-sm text-muted">{t('inEur', { value: alt(r.amountDue) })}</p>
+          {/* Live region: announces label + final amount once per change (the
+              animated counter itself is hidden so it doesn't read every frame). */}
+          <div className="relative" aria-live="polite" aria-atomic="true">
+            <p className="mt-5 text-sm text-muted">{r.ccrExempt ? t('ccrDue') : t('netTaxes')}</p>
+            <p className="mt-1">
+              <span aria-hidden>
+                <AnimatedNumber
+                  value={currency === 'dzd' ? r.amountDue : r.amountDueEur}
+                  format={(v) => (currency === 'dzd' ? formatDzd(v, locale) : formatPrice(v, locale))}
+                  className="font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl"
+                />
+              </span>
+              <span className="sr-only">{money(r.amountDue)}</span>
+            </p>
+            <p className="mt-1 text-sm text-muted">{t('inEur', { value: alt(r.amountDue) })}</p>
+          </div>
 
           {r.ccrExempt && (
             <p className="relative mt-4 flex gap-2 rounded-xl border border-emerald-400/20 bg-emerald-500/10 p-3 text-sm text-emerald-200">
@@ -374,16 +384,18 @@ export function CustomsSimulator({
             </div>
           )}
 
-          {r.issues.length > 0 && (
-            <ul className="relative mt-4 space-y-2">
-              {r.issues.map((issue) => (
-                <li key={issue} className="flex gap-2 rounded-xl border border-amber-400/20 bg-amber-500/10 p-3 text-sm text-amber-100">
-                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-                  {issueText(issue)}
-                </li>
-              ))}
-            </ul>
-          )}
+          <div aria-live="polite">
+            {r.issues.length > 0 && (
+              <ul className="relative mt-4 space-y-2">
+                {r.issues.map((issue) => (
+                  <li key={issue} className="flex gap-2 rounded-xl border border-amber-400/20 bg-amber-500/10 p-3 text-sm text-amber-100">
+                    <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+                    {issueText(issue)}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
           <div className="relative mt-6 flex h-3 overflow-hidden rounded-full bg-white/5" aria-hidden>
             {segments.map((s) => (
@@ -399,7 +411,7 @@ export function CustomsSimulator({
             <caption className="sr-only">{t('resultTitle')}</caption>
             <thead>
               <tr className="text-xs text-muted">
-                <th className="pb-2 text-start font-medium" />
+                <td className="pb-2" />
                 <th className="pb-2 text-end font-medium">{t('rate')}</th>
                 <th className="pb-2 text-end font-medium">{t('amount')}</th>
               </tr>
@@ -569,12 +581,13 @@ function NumberField({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className="field pe-12"
+          aria-describedby={hint ? `${id}-hint` : undefined}
         />
         <span className="pointer-events-none absolute inset-y-0 end-4 grid place-items-center text-sm text-muted">
           {suffix}
         </span>
       </div>
-      {hint && <p className="mt-1.5 text-xs leading-relaxed text-muted">{hint}</p>}
+      {hint && <p id={`${id}-hint`} className="mt-1.5 text-xs leading-relaxed text-muted">{hint}</p>}
     </div>
   );
 }

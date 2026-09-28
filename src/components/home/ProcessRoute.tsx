@@ -107,7 +107,7 @@ export function ProcessRoute() {
                   strokeWidth="1.2"
                 />
               ))}
-              <text x="330" y="352" fill="rgb(150 158 172 / 0.55)" fontSize="10" letterSpacing="3" textAnchor="middle">
+              <text x="330" y="352" fill="rgb(150 158 172 / 0.8)" fontSize="10" letterSpacing="3" textAnchor="middle">
                 MÉDITERRANÉE
               </text>
 

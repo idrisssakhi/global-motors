@@ -8,6 +8,7 @@ import { PageHero } from '@/components/PageHero';
 import { LeadForm } from '@/components/LeadForm';
 import { SocialLinks } from '@/components/SocialLinks';
 import { FadeIn } from '@/components/FadeIn';
+import { ConsentEmbed } from '@/components/ConsentEmbed';
 
 export async function generateMetadata({
   params,
@@ -75,16 +76,20 @@ export default async function ContactPage({
 
             <FadeIn delay={0.25}>
               <div className="relative overflow-hidden rounded-2xl border border-white/[0.07]">
-                <iframe
+                <ConsentEmbed
+                  provider="OpenStreetMap"
+                  kind="map"
                   title={t('mapTitle')}
                   src={mapSrc}
                   loading="lazy"
                   className="h-72 w-full [filter:invert(0.92)_hue-rotate(180deg)_saturate(0.6)_brightness(0.9)]"
+                  overlay={
+                    <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="btn-primary absolute bottom-4 end-4 !px-4 !py-2 text-sm">
+                      <Navigation className="h-4 w-4" aria-hidden />
+                      {t('directions')}
+                    </a>
+                  }
                 />
-                <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="btn-primary absolute bottom-4 end-4 !px-4 !py-2 text-sm">
-                  <Navigation className="h-4 w-4" aria-hidden />
-                  {t('directions')}
-                </a>
               </div>
             </FadeIn>
 

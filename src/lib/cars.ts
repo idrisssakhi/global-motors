@@ -54,14 +54,18 @@ async function getInventory(): Promise<Car[]> {
   return isSupabaseConfigured() ? getCachedInventory() : [];
 }
 
-/** Public listing — never returns sold cars. */
+/** Public listing — sold cars included (stamped "Vendu" and listed last). */
 export async function getCars(filters: CarFilters = {}): Promise<Car[]> {
-  const cars = (await getInventory()).filter((c) => c.status !== 'vendu');
-  return filterCars(cars, filters);
+  return filterCars(await getInventory(), filters);
+}
+
+/** Cars that can still be bought — for the home showcase and suggestions. */
+async function getAvailableCars(): Promise<Car[]> {
+  return (await getCars()).filter((c) => c.status !== 'vendu');
 }
 
 export async function getFeaturedCars(limit = 6): Promise<Car[]> {
-  return (await getCars()).slice(0, limit);
+  return (await getAvailableCars()).slice(0, limit);
 }
 
 export async function getCarBySlug(slug: string): Promise<Car | null> {
@@ -77,7 +81,7 @@ export async function getMakes(): Promise<string[]> {
 }
 
 export async function getRelatedCars(car: Car, limit = 3): Promise<Car[]> {
-  const others = (await getCars()).filter((c) => c.id !== car.id);
+  const others = (await getAvailableCars()).filter((c) => c.id !== car.id);
   const sameMake = others.filter((c) => c.make === car.make);
   return [...sameMake, ...others.filter((c) => c.make !== car.make)].slice(0, limit);
 }

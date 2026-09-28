@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation';
 import { SITE, MAPS_URL, whatsappLink } from '@/lib/site';
 import { Logo } from './Logo';
 import { SocialLinks } from './SocialLinks';
+import { CookieSettingsButton } from './CookieConsent';
 
 export function Footer() {
   const t = useTranslations();
@@ -15,6 +16,12 @@ export function Footer() {
     { href: '/voitures', label: t('nav.cars') },
     { href: '/a-propos', label: t('nav.about') },
     { href: '/contact', label: t('nav.contact') },
+  ];
+  const legal = [
+    { href: '/mentions-legales', label: t('footer.legal') },
+    { href: '/conditions-utilisation', label: t('footer.terms') },
+    { href: '/confidentialite', label: t('footer.privacy') },
+    { href: '/cookies', label: t('footer.cookies') },
   ];
   const services = [
     { href: '/simulateur-dedouanement', label: t('footer.serviceCustoms') },
@@ -42,9 +49,9 @@ export function Footer() {
         <FooterCol title={t('footer.services')} links={services} />
 
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">
             {t('footer.contact')}
-          </h3>
+          </h2>
           <ul className="mt-5 space-y-3 text-sm">
             {SITE.phone && (
               <li>
@@ -99,7 +106,7 @@ export function Footer() {
             {SITE.legal.vat} · {SITE.address.street}, {SITE.address.postalCode}{' '}
             {SITE.address.city}
           </p>
-          <p className="text-muted/70">
+          <p>
             {t('footer.credits')} :{' '}
             {SITE.credits.map((c, i) => (
               <span key={c.href}>
@@ -111,12 +118,23 @@ export function Footer() {
             ))}
           </p>
           <div className="flex flex-col justify-between gap-2 border-t border-white/[0.06] pt-4 sm:flex-row">
-            <p>
-              © {year} {SITE.name}. {t('footer.rights')}{' '}
-              <Link href="/mentions-legales" className="hover:text-accent">
-                {t('footer.legal')}
-              </Link>
-            </p>
+            <div>
+              <p>
+                © {year} {SITE.name}. {t('footer.rights')}
+              </p>
+              <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                {legal.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="underline-offset-2 hover:text-accent hover:underline">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+                <li>
+                  <CookieSettingsButton className="underline-offset-2 hover:text-accent hover:underline" />
+                </li>
+              </ul>
+            </div>
             <p>
               {t('footer.developedBy')}{' '}
               <span className="font-semibold text-ink/80">{SITE.developer.name}</span>
@@ -137,7 +155,7 @@ function FooterCol({
 }) {
   return (
     <div>
-      <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{title}</h3>
+      <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-muted">{title}</h2>
       <ul className="mt-5 space-y-3 text-sm">
         {links.map((l) => (
           <li key={l.label}>

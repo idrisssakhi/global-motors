@@ -11,6 +11,8 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { SmoothScroll } from '@/components/SmoothScroll';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { CookieConsent } from '@/components/CookieConsent';
+import { MotionProvider } from '@/components/MotionProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -73,11 +75,14 @@ export default async function LocaleLayout({
     >
       <body className="min-h-screen overflow-x-clip bg-canvas text-ink antialiased">
         <NextIntlClientProvider>
+          <MotionProvider>
           <SmoothScroll />
           <Header />
-          <main>{children}</main>
+          <main id="main" tabIndex={-1}>{children}</main>
           <Footer />
           <WhatsAppButton />
+          <CookieConsent />
+          </MotionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

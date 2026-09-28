@@ -12,6 +12,8 @@
   --color-ink: #eceef3;
   --color-muted: #969eac;
   --color-line: #1f2430;
+  /* Form-field outline: ≥3:1 against the field and the panel around it (WCAG 1.4.11). */
+  --color-field-line: #626977;
 
   --color-primary: #ffffff;
   --color-primary-600: #d7dbe3;
@@ -54,6 +56,16 @@ body {
 html[dir='rtl'] body,
 html[dir='rtl'] .font-display {
   font-family: var(--font-arabic);
+}
+
+/* Keyboard focus: one visible ring everywhere (accent ≥4.7:1 on every surface). */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+/* Skip-link target: focused programmatically, no ring on the whole page. */
+main:focus {
+  outline: none;
 }
 
 ::selection {
@@ -175,7 +187,7 @@ html.lenis body {
   .field {
     width: 100%;
     border-radius: 0.85rem;
-    border: 1px solid var(--color-line);
+    border: 1px solid var(--color-field-line);
     background: var(--color-surface-2);
     padding: 0.75rem 1rem;
     font-size: 0.925rem;
@@ -184,7 +196,7 @@ html.lenis body {
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .field::placeholder {
-    color: rgb(150 158 172 / 0.7);
+    color: var(--color-muted);
   }
   .field:focus {
     border-color: rgb(239 70 80 / 0.7);
@@ -417,6 +429,8 @@ html[dir='rtl'] .marquee-track {
   animation: gm-route-dot 3.5s ease-in-out infinite alternate;
 }
 
+/* Reduced motion: decorative loops stop at their resting (end) state and
+   every other animation/transition collapses to an instant change. */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
   .animate-fade,
@@ -428,4 +442,21 @@ html[dir='rtl'] .marquee-track {
   .hero-anim * {
     animation: none !important;
   }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* "Pause animations" toggle in the header (WCAG 2.2.2): same loops, stopped. */
+html[data-motion='paused'] .animate-scroll-dot,
+html[data-motion='paused'] .animate-pulse-ring,
+html[data-motion='paused'] .skeleton-shimmer,
+html[data-motion='paused'] .marquee-track,
+html[data-motion='paused'] .hero-anim * {
+  animation: none !important;
 }
