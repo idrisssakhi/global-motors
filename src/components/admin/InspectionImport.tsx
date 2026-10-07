@@ -197,7 +197,7 @@ export function InspectionImport({
             Importer un rapport d’inspection
           </h2>
           <p className="mt-1 text-sm text-muted">
-            PDF Macadam : les caractéristiques, l’équipement et les photos
+            PDF Macadam ou Openlane : les caractéristiques, l’équipement et les photos
             pré-remplissent la fiche. Le prix reste à saisir.
           </p>
         </div>
