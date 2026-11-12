@@ -9,13 +9,14 @@ export const SITE = {
   legalName: 'SKH GLOBAL MOTORS',
   taglineFr: 'Véhicules d’exception en France & export vers l’Algérie',
   taglineAr: 'سيارات مميزة في فرنسا والتصدير إلى الجزائر',
+  taglineEn: 'Premium cars in France & export to Algeria, Tunisia and Morocco',
 
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://skh-global-motors.fr',
 
   phone: '+33 6 03 04 26 48',
   phoneHref: 'tel:+33603042648',
   whatsapp: '33603042648', // digits only, international format, no "+"
-  email: '', // TODO: ex. 'contact@skh-global-motors.fr'
+  email: 'skh.global.motors@gmail.com',
 
   address: {
     street: '7 rue de la Grande Ceinture',
@@ -77,10 +78,17 @@ export const SITE = {
     instagram: '',
     tiktok: 'https://www.tiktok.com/@skh.global.motors',
     facebook: '',
-    google: '',
+    /** Google Business Profile (share link from Google Maps). */
+    google: 'https://share.google/6tL8FzaoFelJ3KVvT',
   },
 
-  serviceAreas: ['France', 'Algérie / Algeria', 'Europe'],
+  serviceAreas: ['France', 'Algérie / Algeria', 'Tunisie / Tunisia', 'Maroc / Morocco', 'Europe'],
+
+  /**
+   * Markets served. Algeria is the core export market (customs simulator);
+   * Tunisia and Morocco are handled on request; France is direct sale.
+   */
+  markets: ['fr', 'dz', 'tn', 'ma'] as const,
 
   keywords: [
     'SKH Global Motors',
@@ -97,6 +105,9 @@ export const SITE = {
     'TVA récupérable export',
     'garage automobile Argenteuil',
     'mandataire automobile Val-d’Oise',
+    'export voiture Tunisie',
+    'export voiture Maroc',
+    'car export France Algeria',
     'voiture premium occasion',
   ] as string[],
 

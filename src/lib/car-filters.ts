@@ -1,4 +1,5 @@
 import type { Car } from '@/lib/types';
+import { dzRoutes, type DzRoute } from '@/lib/eligibility';
 
 /** Client-safe filtering helpers shared by the server data layer and CarList. */
 
@@ -9,12 +10,19 @@ export interface CarFilters {
   maxPrice?: number;
   minYear?: number;
   exportDz?: boolean;
+  /** Algerian import route the car must qualify for. */
+  dz?: string;
   q?: string;
   sort?: string;
 }
 
+/** Sold cars are hidden from the listing and paged in this many at a time. */
+export const SOLD_PAGE_SIZE = 12;
+
 /** The fields a CarCard needs — keeps the listing payload small. */
-export type CarSummary = Pick<
+export type CarSummary = CarSummaryFields & { dzRoutes: DzRoute[] };
+
+type CarSummaryFields = Pick<
   Car,
   | 'id'
   | 'slug'
@@ -31,6 +39,9 @@ export type CarSummary = Pick<
   | 'power_hp'
   | 'title_fr'
   | 'title_ar'
+  | 'title_en'
+  | 'first_registration'
+  | 'engine_cc'
   | 'images'
   | 'featured'
   | 'export_dz'
@@ -55,6 +66,10 @@ export function toSummary(car: Car): CarSummary {
     power_hp: car.power_hp,
     title_fr: car.title_fr,
     title_ar: car.title_ar,
+    title_en: car.title_en ?? null,
+    first_registration: car.first_registration,
+    engine_cc: car.engine_cc,
+    dzRoutes: dzRoutes(car),
     images: car.images.slice(0, 2), // cover + hover photo
     featured: car.featured,
     export_dz: car.export_dz,
@@ -63,7 +78,7 @@ export function toSummary(car: Car): CarSummary {
   };
 }
 
-export function filterCars<T extends CarSummary>(cars: T[], f: CarFilters): T[] {
+export function filterCars<T extends CarSummaryFields>(cars: T[], f: CarFilters): T[] {
   const q = f.q?.trim().toLowerCase();
   const out = cars.filter(
     (car) =>
@@ -73,6 +88,7 @@ export function filterCars<T extends CarSummary>(cars: T[], f: CarFilters): T[] 
       (!f.maxPrice || car.price_eur <= f.maxPrice) &&
       (!f.minYear || car.year >= f.minYear) &&
       (!f.exportDz || car.export_dz) &&
+      (!f.dz || (f.dz === 'any' ? car.export_dz : dzRoutes(car).includes(f.dz as DzRoute))) &&
       (!q ||
         `${car.make} ${car.model} ${car.version ?? ''}`.toLowerCase().includes(q))
   );

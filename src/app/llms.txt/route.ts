@@ -14,7 +14,7 @@ export async function GET() {
 
   const body = `# ${SITE.name}
 
-> ${SITE.taglineFr}. ${SITE.legal.name} (${SITE.legal.legalForm}, SIREN ${SITE.legal.siren}) sells recent and premium vehicles in France, handles turnkey export to Algeria and offers an Algerian customs duty simulator. Site in French (default) and Arabic (/ar).
+> ${SITE.taglineFr}. ${SITE.legal.name} (${SITE.legal.legalForm}, SIREN ${SITE.legal.siren}) sells recent and premium vehicles in France, handles turnkey export to Algeria (and to Tunisia and Morocco on request) and offers an Algerian customs duty simulator. Site in French (default), Arabic (/ar) and English (/en).
 
 - Address: ${SITE.address.street}, ${SITE.address.postalCode} ${SITE.address.city}, ${SITE.address.country}
 ${SITE.phone ? `- Phone / WhatsApp: ${SITE.phone}\n` : ''}${SITE.email ? `- E-mail: ${SITE.email}\n` : ''}- Service areas: ${SITE.serviceAreas.join(', ')}
@@ -23,13 +23,15 @@ ${SITE.phone ? `- Phone / WhatsApp: ${SITE.phone}\n` : ''}${SITE.email ? `- E-ma
 
 - [Vehicles for sale](${base}/voitures): current inventory with prices (EUR, VAT included unless marked HT)
 - [Algeria customs simulator](${base}/simulateur-dedouanement): indicative estimate of Algerian customs duties and taxes (not an official quote)
+- [Import guides](${base}/blog): Algerian import rules 2026, under-3-year imports, port restrictions, export checks
 - [About](${base}/a-propos)
 - [Contact](${base}/contact)
 - [Arabic version](${base}/ar)
+- [English version](${base}/en)
 
 ## Vehicles currently listed
 
-${cars.length ? cars.map((c) => `- [${c.make} ${c.model}${c.version ? ` ${c.version}` : ''} (${c.year})](${base}/voitures/${c.slug}): ${eur.format(c.price_eur)}, ${c.mileage_km.toLocaleString('fr-FR')} km${c.status === 'vendu' ? ' (SOLD)' : c.status === 'reserve' ? ' (reserved)' : ''}`).join('\n') : '- No vehicle listed at the moment.'}
+${cars.filter((c) => c.status !== 'vendu').length ? cars.filter((c) => c.status !== 'vendu').map((c) => `- [${c.make} ${c.model}${c.version ? ` ${c.version}` : ''} (${c.year})](${base}/voitures/${c.slug}): ${eur.format(c.price_eur)}, ${c.mileage_km.toLocaleString('fr-FR')} km${c.status === 'vendu' ? ' (SOLD)' : c.status === 'reserve' ? ' (reserved)' : ''}`).join('\n') : '- No vehicle listed at the moment.'}
 
 ## Legal
 

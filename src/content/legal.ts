@@ -7,6 +7,7 @@
  * The French text prevails; the Arabic one is a courtesy translation.
  */
 import { SITE } from '@/lib/site';
+import { LEGAL_EN } from '@/content/legal-en';
 
 export type LegalBlock =
   | { type: 'p'; text: string }
@@ -255,7 +256,7 @@ const cookiesFr: LegalDoc = {
           type: 'table',
           head: ['Nom', 'Rôle', 'Durée'],
           rows: [
-            ['NEXT_LOCALE (cookie)', 'Mémorise la langue choisie (français ou arabe)', 'Session du navigateur'],
+            ['NEXT_LOCALE (cookie)', 'Mémorise la langue choisie (français, arabe ou anglais)', 'Session du navigateur'],
             ['skh-consent-v1 (stockage local)', 'Mémorise votre choix concernant les contenus externes', `${SITE.consentMaxAgeMonths} mois`],
             ['sb-… (cookies)', 'Connexion de notre équipe à l’espace d’administration, jamais déposés pour les visiteurs', 'Session de connexion'],
           ],
@@ -499,7 +500,7 @@ const cookiesAr: LegalDoc = {
           type: 'table',
           head: ['الاسم', 'الدور', 'المدة'],
           rows: [
-            ['NEXT_LOCALE (كوكي)', 'حفظ اللغة المختارة (الفرنسية أو العربية)', 'مدة جلسة المتصفح'],
+            ['NEXT_LOCALE (كوكي)', 'حفظ اللغة المختارة (الفرنسية أو العربية أو الإنجليزية)', 'مدة جلسة المتصفح'],
             ['skh-consent-v1 (تخزين محلي)', 'حفظ اختياركم بشأن المحتويات الخارجية', `${SITE.consentMaxAgeMonths} أشهر`],
             ['sb-… (كوكيز)', 'تسجيل دخول فريقنا إلى لوحة الإدارة، ولا تُوضع أبداً للزوار', 'مدة جلسة الدخول'],
           ],
@@ -541,6 +542,7 @@ const DOCS: Record<'fr' | 'ar', Record<LegalDocKey, LegalDoc>> = {
 };
 
 export function getLegalDoc(locale: string, key: LegalDocKey): LegalDoc {
+  if (locale === 'en') return LEGAL_EN[key];
   return DOCS[locale === 'ar' ? 'ar' : 'fr'][key];
 }
 

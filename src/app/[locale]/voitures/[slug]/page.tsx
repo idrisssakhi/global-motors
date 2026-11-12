@@ -14,7 +14,6 @@ import {
   Palette,
   Phone,
   Ship,
-  Sparkles,
   Users,
   Zap,
   Cylinder,
@@ -26,8 +25,11 @@ import { SITE, whatsappLink } from '@/lib/site';
 import { pageMeta, videoEmbed } from '@/lib/seo';
 import { getAllSlugs, getCarBySlug, getCustomsSettings, getRelatedCars } from '@/lib/cars';
 import { toSummary } from '@/lib/car-filters';
-import { ageBracketFromDate, isUnderThreeYears, toCustomsFuel } from '@/lib/customs';
-import { formatDate, formatNumber, formatPrice } from '@/lib/format';
+import { computeCustoms, toCustomsFuel, type AgeBracket, type CustomsRegime } from '@/lib/customs';
+import { carAgeYears, dzRoutes } from '@/lib/eligibility';
+import { carDescription, carTitle } from '@/lib/car-i18n';
+import { DzBadges } from '@/components/DzBadges';
+import { formatDate, formatDzd, formatNumber, formatPrice } from '@/lib/format';
 import { breadcrumbSchema, vehicleSchema } from '@/lib/structured-data';
 import { CarGallery } from '@/components/CarGallery';
 import { CarCard } from '@/components/CarCard';
@@ -54,9 +56,9 @@ export async function generateMetadata({
   const car = await getCarBySlug(slug);
   if (!car) return { title: SITE.name };
 
-  const title = (locale === 'ar' ? car.title_ar : car.title_fr) || `${car.make} ${car.model} ${car.year}`;
+  const title = carTitle(car, locale, `${car.make} ${car.model} ${car.year}`);
   const description =
-    (locale === 'ar' ? car.description_ar : car.description_fr) ||
+    carDescription(car, locale) ||
     `${title} — ${formatPrice(car.price_eur, locale as Locale)}`;
 
   return pageMeta(locale, `/voitures/${slug}`, `${title} — ${SITE.name}`, description);
@@ -82,11 +84,36 @@ export default async function CarDetailPage({
     getRelatedCars(car),
   ]);
 
-  const title = (loc === 'ar' ? car.title_ar : car.title_fr) || `${car.make} ${car.model}`;
-  const description = loc === 'ar' ? car.description_ar : car.description_fr;
+  const title = carTitle(car, loc);
+  const description = carDescription(car, loc);
   const sold = car.status === 'vendu';
-  const under3 = isUnderThreeYears(car.first_registration);
-  const ageBracket = ageBracketFromDate(car.first_registration);
+  const routes = dzRoutes(car, customs.ccr_max_cc, customs.ccr_max_age_years);
+  const years = carAgeYears(car);
+  const ageBracket: AgeBracket =
+    years == null ? 3 : car.mileage_km < 100 && !car.first_registration ? 0 : (Math.min(5, Math.max(1, Math.ceil(years))) as AgeBracket);
+  const exportPrice = car.vat_recoverable && car.price_ht ? car.price_ht : car.price_eur;
+  // "Delivered to Algeria" estimate for each route the car qualifies for.
+  const estimates = sold
+    ? []
+    : (['res3', 'ccr5'] as const)
+        .filter((r) => routes.includes(r))
+        .map((r) => {
+          const regime: CustomsRegime = r === 'res3' ? 'standard' : 'ccr';
+          const res = computeCustoms(
+            {
+              regime,
+              fuel: toCustomsFuel(car.fuel),
+              age: ageBracket,
+              engineCc: car.engine_cc ?? 1400,
+              priceEur: exportPrice,
+              freightEur: customs.default_freight_eur,
+              insuranceEur: customs.default_insurance_eur,
+              exchangeRate: customs.exchange_rate_dzd,
+            },
+            customs
+          );
+          return { route: r, totalEur: res.totalEur, totalDzd: res.totalDzd };
+        });
   const wa = whatsappLink(t('whatsappMsg', { car: `${car.make} ${car.model}`, year: car.year }));
   const video = car.video_url ? videoEmbed(car.video_url) : null;
 
@@ -187,12 +214,8 @@ export default async function CarDetailPage({
                     <Ship className="h-3.5 w-3.5" aria-hidden /> {t('exportEligible')}
                   </span>
                 )}
-                {under3 && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
-                    <Sparkles className="h-3.5 w-3.5" aria-hidden /> {t('under3')}
-                  </span>
-                )}
               </div>
+              {!sold && <DzBadges routes={routes} className="mt-2" />}
 
               <div className="mt-6 space-y-2 border-t border-white/[0.07] pt-5">
                 {car.vat_recoverable && car.price_ht != null && (
@@ -208,6 +231,27 @@ export default async function CarDetailPage({
                   <span className="font-display text-3xl font-semibold text-white">{formatPrice(car.price_eur, loc)}</span>
                 </div>
               </div>
+
+              {estimates.length > 0 && (
+                <div className="mt-5 rounded-2xl border border-accent/20 bg-accent/[0.06] p-4">
+                  <p className="text-sm font-semibold text-white">{t('deliveredTitle')}</p>
+                  <dl className="mt-2 space-y-1.5">
+                    {estimates.map((e) => (
+                      <div key={e.route} className="flex items-baseline justify-between gap-3">
+                        <dt className="text-xs text-muted">{t(`delivered.${e.route}`)}</dt>
+                        <dd className="text-end">
+                          <span className="font-display text-lg font-semibold text-white">≈ {formatPrice(e.totalEur, loc)}</span>
+                          <span className="block text-[11px] text-muted">{formatDzd(e.totalDzd, loc)}</span>
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <p className="mt-2 text-[11px] leading-snug text-muted">
+                    {t('deliveredNote', { freight: formatPrice(customs.default_freight_eur + customs.default_insurance_eur, loc) })}{' '}
+                    <a href="#douane" className="text-accent underline underline-offset-2">{t('deliveredDetail')}</a>
+                  </p>
+                </div>
+              )}
 
               {(wa || SITE.phone) && (
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -241,7 +285,7 @@ export default async function CarDetailPage({
       </div>
 
       {car.export_dz && (
-        <section className="border-y border-white/[0.06] bg-surface/60 py-20">
+        <section id="douane" className="scroll-mt-24 border-y border-white/[0.06] bg-surface/60 py-20">
           <div className="container-x">
             <SectionHeading eyebrow="DZ" title={t('customsTitle')} subtitle={t('customsText')} />
             <FadeIn className="mt-10">
@@ -250,9 +294,9 @@ export default async function CarDetailPage({
                 variant="compact"
                 carId={car.id}
                 initial={{
-                  regime: 'standard',
                   fuel: toCustomsFuel(car.fuel),
-                  age: ageBracket ?? (car.mileage_km < 100 ? 0 : 3),
+                  regime: routes.includes('res3') || !routes.includes('ccr5') ? 'standard' : 'ccr',
+                  age: ageBracket,
                   engineCc: car.engine_cc ?? 1400,
                   priceEur: car.vat_recoverable && car.price_ht ? car.price_ht : car.price_eur,
                 }}

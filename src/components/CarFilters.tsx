@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { FUEL_TYPES, GEARBOX_TYPES } from '@/lib/types';
+import { DZ_ROUTES } from '@/lib/eligibility';
 
 type Params = Record<string, string | undefined>;
 
@@ -89,6 +90,17 @@ export function CarFilters({
         </label>
 
         <label className="block">
+          <span className="sr-only">{t('dzRoute')}</span>
+          <select value={current.dz ?? ''} onChange={(e) => update('dz', e.target.value)} className="field">
+            <option value="">{t('dzAll')}</option>
+            <option value="any">{t('exportDz')}</option>
+            {DZ_ROUTES.map((r) => (
+              <option key={r} value={r}>{t(`dzOption.${r}`)}</option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block">
           <span className="sr-only">{t('sort')}</span>
           <select value={current.sort ?? ''} onChange={(e) => update('sort', e.target.value)} className="field">
             <option value="">{t('sort')} · {t('sortRecent')}</option>
@@ -99,15 +111,6 @@ export function CarFilters({
           </select>
         </label>
 
-        <label className="inline-flex cursor-pointer items-center gap-2.5 text-sm text-ink/90">
-          <input
-            type="checkbox"
-            checked={current.exportDz === '1'}
-            onChange={(e) => update('exportDz', e.target.checked ? '1' : '')}
-            className="h-4 w-4 cursor-pointer accent-accent"
-          />
-          {t('exportDz')}
-        </label>
       </div>
     </div>
   );

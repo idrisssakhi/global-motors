@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { SITE } from '@/lib/site';
 import { getCars } from '@/lib/cars';
+import { POSTS } from '@/content/blog';
 
 export const revalidate = 86400;
 
@@ -8,6 +9,7 @@ const STATIC_PATHS: { path: string; priority: number; freq: MetadataRoute.Sitema
   { path: '', priority: 1, freq: 'weekly' },
   { path: '/voitures', priority: 0.9, freq: 'daily' },
   { path: '/simulateur-dedouanement', priority: 0.9, freq: 'monthly' },
+  { path: '/blog', priority: 0.7, freq: 'weekly' },
   { path: '/a-propos', priority: 0.5, freq: 'yearly' },
   { path: '/contact', priority: 0.6, freq: 'yearly' },
   { path: '/mentions-legales', priority: 0.2, freq: 'yearly' },
@@ -28,12 +30,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified,
     changeFrequency,
     priority,
-    alternates: { languages: { fr: `${base}${path || '/'}`, ar: `${base}/ar${path}`, 'x-default': `${base}${path || '/'}` } },
+    alternates: {
+      languages: {
+        fr: `${base}${path || '/'}`,
+        ar: `${base}/ar${path}`,
+        en: `${base}/en${path}`,
+        'x-default': `${base}${path || '/'}`,
+      },
+    },
   });
 
   const cars = await getCars();
   return [
     ...STATIC_PATHS.map((p) => entry(p.path, p.priority, p.freq)),
+    ...POSTS.map((p) => entry(`/blog/${p.slug}`, 0.7, 'monthly', new Date(p.updated))),
     ...cars.map((c) => entry(`/voitures/${c.slug}`, 0.8, 'weekly', new Date(c.updated_at))),
   ];
 }

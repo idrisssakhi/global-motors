@@ -82,7 +82,8 @@ export default async function ContactPage({
                   title={t('mapTitle')}
                   src={mapSrc}
                   loading="lazy"
-                  className="h-72 w-full [filter:invert(0.92)_hue-rotate(180deg)_saturate(0.6)_brightness(0.9)]"
+                  className="h-72 w-full"
+                  frameClassName="[filter:invert(0.92)_hue-rotate(180deg)_saturate(0.6)_brightness(0.9)]"
                   overlay={
                     <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="btn-primary absolute bottom-4 end-4 !px-4 !py-2 text-sm">
                       <Navigation className="h-4 w-4" aria-hidden />

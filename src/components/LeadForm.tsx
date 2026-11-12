@@ -8,6 +8,8 @@ import { CheckCircle2, Loader2, Send } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { submitLead, type LeadSubmission } from '@/app/actions/lead';
 import type { LeadKind } from '@/lib/types';
+import type { Locale } from '@/i18n/routing';
+import { PhoneField } from '@/components/PhoneField';
 
 export function LeadForm({
   kind,
@@ -25,7 +27,7 @@ export function LeadForm({
   className?: string;
 }) {
   const t = useTranslations('lead');
-  const locale = useLocale() as 'fr' | 'ar';
+  const locale = useLocale() as Locale;
   const [pending, startTransition] = useTransition();
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -88,16 +90,11 @@ export function LeadForm({
               <p className="font-display mb-2 text-lg font-semibold text-white">{title}</p>
             )}
             <p className="text-xs text-muted">{t('required')}</p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <label className="block">
-                <span className="mb-1.5 block text-sm font-medium text-white">{t('name')} <span aria-hidden className="text-accent">*</span></span>
-                <input name="name" required minLength={2} maxLength={120} autoComplete="name" className="field" />
-              </label>
-              <label className="block">
-                <span className="mb-1.5 block text-sm font-medium text-white">{t('phone')} <span aria-hidden className="text-accent">*</span></span>
-                <input name="phone" type="tel" required maxLength={40} autoComplete="tel" className="field" dir="ltr" />
-              </label>
-            </div>
+            <label className="block">
+              <span className="mb-1.5 block text-sm font-medium text-white">{t('name')} <span aria-hidden className="text-accent">*</span></span>
+              <input name="name" required minLength={2} maxLength={120} autoComplete="name" className="field" />
+            </label>
+            <PhoneField />
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium text-white">{t('email')}</span>
               <input name="email" type="email" maxLength={200} autoComplete="email" className="field" dir="ltr" />

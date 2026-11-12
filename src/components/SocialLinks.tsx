@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import { Star } from 'lucide-react';
 import { SITE } from '@/lib/site';
 
 /** TikTok brand glyph (lucide has no TikTok icon). */
@@ -12,7 +14,7 @@ export function TikTokIcon({ className }: { className?: string }) {
 interface SocialLink {
   name: string;
   href: string;
-  Icon: typeof TikTokIcon;
+  Icon: (props: { className?: string }) => ReactNode;
 }
 
 /** Social profile pills (only configured networks are shown). */
@@ -20,6 +22,8 @@ export function SocialLinks({ className = '', label }: { className?: string; lab
   const links: SocialLink[] = [];
   const tiktok: string = SITE.social.tiktok;
   if (tiktok) links.push({ name: 'TikTok', href: tiktok, Icon: TikTokIcon });
+  const google: string = SITE.social.google;
+  if (google) links.push({ name: 'Google', href: google, Icon: Star });
 
   if (links.length === 0) return null;
 

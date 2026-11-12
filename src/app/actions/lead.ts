@@ -3,6 +3,7 @@
 import { createPublicClient } from '@/lib/supabase/public';
 import { isSupabaseConfigured } from '@/lib/cars';
 import type { LeadKind } from '@/lib/types';
+import { routing, type Locale } from '@/i18n/routing';
 
 export interface LeadSubmission {
   kind: LeadKind;
@@ -11,7 +12,7 @@ export interface LeadSubmission {
   email?: string;
   message?: string;
   carId?: string;
-  locale: 'fr' | 'ar';
+  locale: Locale;
   payload?: Record<string, string | number | boolean | null>;
   /** Honeypot — real visitors never fill it. */
   website?: string;
@@ -39,6 +40,8 @@ export async function submitLead(
     name.length < 2 ||
     name.length > 120 ||
     phone.replace(/\D/g, '').length < 6 ||
+    phone.replace(/\D/g, '').length > 16 ||
+    !/^\+?[\d\s().-]+$/.test(phone) ||
     phone.length > 40 ||
     (email && (email.length > 200 || !email.includes('@'))) ||
     (message && message.length > 4000) ||
@@ -49,18 +52,24 @@ export async function submitLead(
 
   if (!isSupabaseConfigured()) return { ok: false, error: 'failed' };
 
-  const { error } = await createPublicClient()
-    .from('leads')
-    .insert({
-      kind: input.kind,
-      name,
-      phone,
-      email,
-      message,
-      car_id: input.carId && UUID.test(input.carId) ? input.carId : null,
-      locale: input.locale === 'ar' ? 'ar' : 'fr',
-      payload: input.payload ?? {},
-    });
+  const locale = routing.locales.includes(input.locale) ? input.locale : routing.defaultLocale;
+  const row = {
+    kind: input.kind,
+    name,
+    phone,
+    email,
+    message,
+    car_id: input.carId && UUID.test(input.carId) ? input.carId : null,
+    locale,
+    payload: { ...(input.payload ?? {}), locale },
+  };
+  const supabase = createPublicClient();
+  let { error } = await supabase.from('leads').insert(row);
+  // 23514 = check violation: the DB still only accepts fr/ar (migration
+  // 20261112120000_english not pushed yet). The locale is kept in payload.
+  if (error?.code === '23514' && locale === 'en') {
+    ({ error } = await supabase.from('leads').insert({ ...row, locale: null }));
+  }
 
   if (error) {
     console.error('submitLead:', error.message);

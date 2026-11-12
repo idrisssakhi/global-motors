@@ -11,12 +11,13 @@
     "call": "Appeler",
     "skip": "Aller au contenu",
     "pauseMotion": "Mettre en pause les animations",
-    "playMotion": "Relancer les animations"
+    "playMotion": "Relancer les animations",
+    "blog": "Guides"
   },
   "home": {
     "metaTitle": "SKH Global Motors — Véhicules d’exception en France & export vers l’Algérie",
-    "metaDescription": "Véhicules récents et premium vérifiés en France, export clé en main vers l’Algérie et simulateur de dédouanement. Conseil en français et en arabe.",
-    "heroEyebrow": "Paris · Marseille · Alger",
+    "metaDescription": "Véhicules récents et premium vérifiés en France, export clé en main vers l’Algérie, la Tunisie et le Maroc, et simulateur de dédouanement Algérie. Conseil en français et en arabe.",
+    "heroEyebrow": "France · Algérie · Tunisie · Maroc",
     "heroTitleA": "L’automobile d’exception,",
     "heroTitleB": "de la France à l’Algérie.",
     "heroSubtitle": "Nous sélectionnons des véhicules récents et premium en France, les inspectons, puis les livrons clé en main — achat, transport, documents et estimation douanière inclus.",
@@ -34,7 +35,7 @@
     "marqueeTitle": "Les marques que nous sourçons en Europe",
     "featuredEyebrow": "Stock",
     "featuredTitle": "Sélection du moment",
-    "featuredSubtitle": "Des véhicules vérifiés, prêts à être achetés en France ou exportés vers l’Algérie.",
+    "featuredSubtitle": "Des véhicules vérifiés, prêts à être achetés en France ou exportés vers le Maghreb.",
     "viewAll": "Voir tout le stock",
     "emptyTitle": "Notre stock arrive.",
     "emptyText": "Nouveaux véhicules en cours de préparation. Dites-nous le modèle que vous recherchez : nous le trouvons pour vous en Europe.",
@@ -99,13 +100,29 @@
     "searchEyebrow": "Recherche sur mesure",
     "searchTitle": "Vous ne trouvez pas votre modèle ? Nous le trouvons pour vous.",
     "searchText": "Marque, finition, couleur, budget : nous cherchons le véhicule idéal en France et en Europe, vérifié et prêt pour l’export.",
-    "searchCta": "Lancer ma recherche"
+    "searchCta": "Lancer ma recherche",
+    "marketsEyebrow": "Nos marchés",
+    "marketsTitle": "De la France à tout le Maghreb.",
+    "marketsSubtitle": "Achetez votre véhicule en France pour rouler ici, ou faites-le livrer de l’autre côté de la Méditerranée.",
+    "marketFrTitle": "France",
+    "marketFrDesc": "Vente aux particuliers et aux professionnels : véhicules vérifiés, garantie, immatriculation et livraison partout en France.",
+    "marketFrCta": "Voir le stock",
+    "marketDzTitle": "Algérie",
+    "marketDzDesc": "Notre cœur de métier : export clé en main, résidents (moins de 3 ans) ou retour définitif CCR (moins de 5 ans), droits estimés avant l’achat.",
+    "marketDzCta": "Simuler le dédouanement",
+    "marketTnTitle": "Tunisie",
+    "marketTnDesc": "Export sur demande : nous trouvons le véhicule, préparons les documents d’export et organisons le transport jusqu’au port tunisien.",
+    "marketMaTitle": "Maroc",
+    "marketMaDesc": "Export sur demande : sélection, achat hors taxe quand c’est possible, documents et transport jusqu’au Maroc.",
+    "marketAskCta": "Demander un devis",
+    "marketAskMsg": "Bonjour, je souhaite un devis pour exporter un véhicule vers {country}.",
+    "reviewsCta": "Voir nos avis Google"
   },
   "cars": {
     "metaTitle": "Stock de véhicules",
     "eyebrow": "Stock",
     "title": "Nos véhicules",
-    "subtitle": "Véhicules récents et premium disponibles à la vente en France et à l’exportation vers l’Algérie.",
+    "subtitle": "Véhicules récents et premium disponibles à la vente en France et à l’export vers l’Algérie, la Tunisie et le Maroc.",
     "resultsOne": "{count} véhicule",
     "resultsOther": "{count} véhicules",
     "empty": "Aucun véhicule ne correspond à votre recherche.",
@@ -127,7 +144,21 @@
     "sortPriceAsc": "Prix croissant",
     "sortPriceDesc": "Prix décroissant",
     "sortKm": "Kilométrage",
-    "sortYear": "Année"
+    "sortYear": "Année",
+    "soldTitle": "Véhicules vendus",
+    "soldIntro": "Quelques véhicules déjà livrés à nos clients.",
+    "soldShow": "Voir les véhicules vendus",
+    "soldMore": "Afficher plus",
+    "soldLoading": "Chargement…",
+    "soldProgress": "{shown} sur {total}",
+    "soldEmpty": "Aucun véhicule vendu ne correspond à ces filtres.",
+    "soldError": "Impossible de charger les véhicules vendus. Réessayez.",
+    "dzRoute": "Import Algérie",
+    "dzAll": "Import Algérie · tous",
+    "dzOption": {
+      "res3": "Résident · moins de 3 ans",
+      "ccr5": "Retour CCR · moins de 5 ans"
+    }
   },
   "car": {
     "priceTTC": "Prix TTC",
@@ -170,7 +201,14 @@
     "prevPhoto": "Photo précédente",
     "nextPhoto": "Photo suivante",
     "soldTitle": "Ce véhicule est vendu",
-    "soldDesc": "Vous cherchez un modèle similaire ? Dites-nous ce qu’il vous faut : nous le trouvons pour vous en France ou en Europe."
+    "soldDesc": "Vous cherchez un modèle similaire ? Dites-nous ce qu’il vous faut : nous le trouvons pour vous en France ou en Europe.",
+    "deliveredTitle": "Prix rendu Algérie estimé",
+    "delivered": {
+      "res3": "Résident · < 3 ans",
+      "ccr5": "Retour CCR · < 5 ans"
+    },
+    "deliveredNote": "Prix export + transport et assurance ({freight}) + droits et taxes estimés. Indicatif, confirmé par un conseiller.",
+    "deliveredDetail": "Voir le détail"
   },
   "status": {
     "disponible": "Disponible",
@@ -310,13 +348,16 @@
     "titleCar": "Demander ce véhicule",
     "titleQuote": "Recevoir une offre rendu Alger",
     "titleSearch": "Recherche personnalisée",
-    "required": "* Champ obligatoire"
+    "required": "* Champ obligatoire",
+    "phoneCountry": "Indicatif du pays",
+    "phoneNumber": "Numéro de téléphone",
+    "phoneHint": "Choisissez votre pays : nous vous répondons aussi sur WhatsApp."
   },
   "about": {
     "metaTitle": "À propos",
     "eyebrow": "À propos",
     "title": "Une maison automobile tournée vers la Méditerranée.",
-    "lead": "SKH Global Motors est une société française basée à Argenteuil, spécialisée dans la vente de véhicules récents et premium et leur exportation vers l’Algérie.",
+    "lead": "SKH Global Motors est une société française basée à Argenteuil, spécialisée dans la vente de véhicules récents et premium en France et leur exportation vers l’Algérie, la Tunisie et le Maroc.",
     "p1": "Nous sommes nés d’un constat simple : importer un véhicule en Algérie reste trop souvent un parcours opaque. Prix, état réel, règles douanières, transport… chaque étape comporte son lot d’incertitudes.",
     "p2": "Notre rôle est de les lever. Nous sélectionnons chaque voiture, vérifions son historique, estimons les droits de douane avant l’achat et organisons l’acheminement jusqu’à Alger.",
     "p3": "Filiale de la Holding SKH, SKH Global Motors s’appuie sur un réseau de partenaires en France et en Europe pour trouver le bon véhicule, au bon prix.",
@@ -372,7 +413,7 @@
     "siren": "SIREN"
   },
   "footer": {
-    "tagline": "Véhicules récents et premium en France, export clé en main vers l’Algérie.",
+    "tagline": "Véhicules récents et premium en France, export clé en main vers l’Algérie, la Tunisie et le Maroc.",
     "explore": "Navigation",
     "services": "Services",
     "contact": "Contact",
@@ -422,5 +463,31 @@
     "embedLoad": "Afficher le contenu",
     "embedRemember": "Choix mémorisé {months} mois, modifiable via « Gérer les cookies ».",
     "learnMore": "En savoir plus"
+  },
+  "dz": {
+    "label": "Éligibilité à l’import en Algérie",
+    "res3": "Éligible < 3 ans",
+    "ccr5": "Éligible CCR < 5 ans",
+    "diesel": "Diesel : droits pleins",
+    "res3Hint": "Résident en Algérie : véhicule de moins de 3 ans, essence, hybride ou électrique (abattement décret 23-74).",
+    "ccr5Hint": "Retour définitif avec certificat de changement de résidence (LF 2026) : moins de 5 ans, ≤ 1 800 cm³ hors électrique, exonéré de droits.",
+    "dieselHint": "Diesel : aucune exonération ni abattement en Algérie."
+  },
+  "blog": {
+    "metaTitle": "Guides import & export",
+    "metaDescription": "Guides pratiques pour acheter une voiture en France et l’importer en Algérie, en Tunisie ou au Maroc : règles 2026, droits de douane, documents, arnaques à éviter.",
+    "eyebrow": "Guides",
+    "title": "Guides & actualités import",
+    "subtitle": "Règles douanières, documents, calendrier des ports : ce qu’il faut savoir avant d’acheter, mis à jour par notre équipe.",
+    "readMore": "Lire le guide",
+    "updated": "Mis à jour le {date}",
+    "minutes": "{count} min de lecture",
+    "back": "Tous les guides",
+    "disclaimer": "Informations données à titre indicatif d’après les textes publiés à la date de mise à jour. Les règles changent souvent : faites confirmer votre cas par un conseiller ou par les douanes avant tout achat.",
+    "related": "À lire aussi",
+    "ctaTitle": "Un projet d’import ?",
+    "ctaText": "Un conseiller vérifie votre éligibilité et estime le coût total avant l’achat.",
+    "ctaButton": "Parler à un conseiller",
+    "toc": "Sommaire"
   }
 }

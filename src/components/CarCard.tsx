@@ -6,6 +6,8 @@ import { Link } from '@/i18n/navigation';
 import type { CarSummary } from '@/lib/car-filters';
 import type { Locale } from '@/i18n/routing';
 import { carImageUrl } from '@/lib/image';
+import { carTitle } from '@/lib/car-i18n';
+import { DzBadges } from '@/components/DzBadges';
 import { formatPrice, formatNumber } from '@/lib/format';
 import { Logo } from './Logo';
 
@@ -19,7 +21,7 @@ export function CarCard({
   priority?: boolean;
 }) {
   const t = useTranslations();
-  const title = (locale === 'ar' ? car.title_ar : car.title_fr) || `${car.make} ${car.model}`;
+  const title = carTitle(car, locale);
   const [cover, hover] = car.images.map(carImageUrl);
   const isSold = car.status === 'vendu';
 
@@ -96,6 +98,7 @@ export function CarCard({
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent">{car.make}</p>
         <h3 className="font-display mt-1 text-lg font-semibold leading-snug text-white">{title}</h3>
         {car.version && <p className="mt-0.5 truncate text-sm text-muted">{car.version}</p>}
+        {!isSold && <DzBadges routes={car.dzRoutes} className="mt-3" size="sm" />}
 
         <dl className="mt-4 grid grid-cols-2 gap-x-3 gap-y-2 text-sm text-muted">
           <Spec icon={Calendar} label={t('car.year')} value={String(car.year)} />

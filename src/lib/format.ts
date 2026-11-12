@@ -1,6 +1,7 @@
 import type { Locale } from '@/i18n/routing';
 
-const numberLocale = (locale: Locale) => (locale === 'ar' ? 'ar-DZ' : 'fr-FR');
+const NUMBER_LOCALE: Record<Locale, string> = { fr: 'fr-FR', ar: 'ar-DZ', en: 'en-GB' };
+const numberLocale = (locale: Locale) => NUMBER_LOCALE[locale] ?? 'fr-FR';
 
 export function formatPrice(value: number, locale: Locale): string {
   return new Intl.NumberFormat(numberLocale(locale), {
@@ -51,4 +52,11 @@ export function buildSlug(
     .replace(/^-+|-+$/g, '');
   const suffix = id ? `-${id.slice(0, 6)}` : '';
   return `${base}${suffix}`;
+}
+
+/** "12 novembre 2026" / "12 November 2026" / Arabic equivalent. */
+export function formatLongDate(iso: string, locale: Locale): string {
+  const d = new Date(`${iso.split('T')[0]}T12:00:00Z`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return new Intl.DateTimeFormat(numberLocale(locale), { dateStyle: 'long', timeZone: 'UTC' }).format(d);
 }

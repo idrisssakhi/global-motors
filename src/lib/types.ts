@@ -29,8 +29,11 @@ export interface Car {
   location: string | null;
   title_fr: string | null;
   title_ar: string | null;
+  /** English title/description (migration 20261112120000; null → French fallback). */
+  title_en?: string | null;
   description_fr: string | null;
   description_ar: string | null;
+  description_en?: string | null;
   images: string[];
   video_url: string | null;
   featured: boolean;
@@ -51,7 +54,7 @@ export interface Lead {
   email: string | null;
   message: string | null;
   car_id: string | null;
-  locale: 'fr' | 'ar' | null;
+  locale: 'fr' | 'ar' | 'en' | null;
   payload: Record<string, unknown>;
 }
 

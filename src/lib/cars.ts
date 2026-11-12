@@ -54,14 +54,43 @@ async function getInventory(): Promise<Car[]> {
   return isSupabaseConfigured() ? getCachedInventory() : [];
 }
 
-/** Public listing — sold cars included (stamped "Vendu" and listed last). */
+/** Whole inventory, sold cars included (sitemap, slugs, filters). */
 export async function getCars(filters: CarFilters = {}): Promise<Car[]> {
   return filterCars(await getInventory(), filters);
 }
 
+/** Public listing: only cars that can still be bought (available + reserved). */
+export async function getListedCars(): Promise<Car[]> {
+  return (await getCars()).filter((c) => c.status !== 'vendu');
+}
+
+export async function countSoldCars(): Promise<number> {
+  return (await getInventory()).filter((c) => c.status === 'vendu').length;
+}
+
+/**
+ * One page of sold cars, loaded on demand from /api/cars/sold. Served from the
+ * cached inventory, so paging never queries Supabase. Most recent sales first
+ * unless a sort is chosen.
+ */
+export async function getSoldCarsPage(
+  filters: CarFilters,
+  offset: number,
+  limit: number
+): Promise<{ cars: Car[]; total: number }> {
+  const sold = filterCars(
+    (await getInventory()).filter((c) => c.status === 'vendu'),
+    filters
+  );
+  if (!filters.sort) {
+    sold.sort((a, b) => (b.updated_at ?? '').localeCompare(a.updated_at ?? ''));
+  }
+  return { cars: sold.slice(offset, offset + limit), total: sold.length };
+}
+
 /** Cars that can still be bought — for the home showcase and suggestions. */
 async function getAvailableCars(): Promise<Car[]> {
-  return (await getCars()).filter((c) => c.status !== 'vendu');
+  return getListedCars();
 }
 
 export async function getFeaturedCars(limit = 6): Promise<Car[]> {

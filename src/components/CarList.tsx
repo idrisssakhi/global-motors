@@ -9,10 +9,11 @@ import type { Locale } from '@/i18n/routing';
 import { filterCars, type CarSummary } from '@/lib/car-filters';
 import { CarCard } from '@/components/CarCard';
 import { CarFilters } from '@/components/CarFilters';
+import { SoldCars } from '@/components/SoldCars';
 
 type Params = Record<string, string | undefined>;
 
-const KEYS = ['q', 'make', 'fuel', 'gearbox', 'maxPrice', 'minYear', 'exportDz', 'sort'];
+const KEYS = ['q', 'make', 'fuel', 'gearbox', 'maxPrice', 'minYear', 'exportDz', 'dz', 'sort'];
 
 /**
  * Filters the inventory in the browser: the page stays static (ISR) and the
@@ -21,10 +22,13 @@ const KEYS = ['q', 'make', 'fuel', 'gearbox', 'maxPrice', 'minYear', 'exportDz',
 export function CarList({
   cars,
   makes,
+  soldTotal = 0,
   locale,
 }: {
+  /** Cars still for sale; sold ones are paged in by <SoldCars>. */
   cars: CarSummary[];
   makes: string[];
+  soldTotal?: number;
   locale: Locale;
 }) {
   const t = useTranslations('cars');
@@ -54,13 +58,20 @@ export function CarList({
         gearbox: params.gearbox,
         maxPrice: params.maxPrice ? Number(params.maxPrice) : undefined,
         minYear: params.minYear ? Number(params.minYear) : undefined,
-        exportDz: params.exportDz === '1',
+        // Old shared links used ?exportDz=1; it now maps to dz=any.
+        dz: params.dz ?? (params.exportDz === '1' ? 'any' : undefined),
         q: params.q,
         sort: params.sort,
       }),
     [cars, params]
   );
   const count = filtered.length;
+  // Same filters for the sold section; changing them remounts it.
+  const soldQuery = useMemo(() => {
+    const sp = new URLSearchParams();
+    for (const k of KEYS) if (params[k]) sp.set(k, params[k]!);
+    return sp.toString();
+  }, [params]);
 
   return (
     <>
@@ -97,6 +108,8 @@ export function CarList({
           </Link>
         </div>
       )}
+
+      {soldTotal > 0 && <SoldCars key={soldQuery} query={soldQuery} locale={locale} />}
     </>
   );
 }

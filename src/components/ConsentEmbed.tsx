@@ -17,12 +17,15 @@ export function ConsentEmbed({
   provider,
   kind,
   className = '',
+  frameClassName = '',
   overlay,
   ...iframe
 }: {
   provider: string;
   kind: 'map' | 'video';
   className?: string;
+  /** Classes for the loaded iframe only (e.g. a dark-mode filter), not the placeholder. */
+  frameClassName?: string;
   /** Rendered on top of the loaded iframe (e.g. a "directions" button). */
   overlay?: ReactNode;
 } & IframeHTMLAttributes<HTMLIFrameElement> & { src: string; title: string }) {
@@ -32,7 +35,7 @@ export function ConsentEmbed({
   if (consent?.external) {
     return (
       <>
-        <iframe {...iframe} className={className} />
+        <iframe {...iframe} className={`${className} ${frameClassName}`} />
         {overlay}
       </>
     );

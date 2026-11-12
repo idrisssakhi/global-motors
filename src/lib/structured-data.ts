@@ -1,5 +1,6 @@
 import { SITE } from '@/lib/site';
-import { carImageUrl } from '@/lib/image';
+import { absoluteCarImageUrl } from '@/lib/image';
+import { carDescription, carTitle } from '@/lib/car-i18n';
 import type { Car } from '@/lib/types';
 import type { Locale } from '@/i18n/routing';
 
@@ -26,11 +27,10 @@ export function autoDealerSchema() {
     areaServed: SITE.serviceAreas,
     foundingDate: SITE.legal.foundingDate,
     vatID: SITE.legal.vat,
-    identifier: {
-      '@type': 'PropertyValue',
-      propertyID: 'SIREN',
-      value: SITE.legal.siren.replace(/\s/g, ''),
-    },
+    identifier: [
+      { '@type': 'PropertyValue', propertyID: 'SIREN', value: SITE.legal.siren.replace(/\s/g, '') },
+      { '@type': 'PropertyValue', propertyID: 'SIRET', value: SITE.legal.siret.replace(/\s/g, '') },
+    ],
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'FR',
@@ -49,11 +49,8 @@ export function autoDealerSchema() {
 
 /** Vehicle + Offer — emitted on each car detail page. */
 export function vehicleSchema(car: Car, locale: Locale) {
-  const name =
-    (locale === 'ar' ? car.title_ar : car.title_fr) ||
-    `${car.make} ${car.model} ${car.year}`;
-  const description =
-    (locale === 'ar' ? car.description_ar : car.description_fr) || name;
+  const name = carTitle(car, locale, `${car.make} ${car.model} ${car.year}`);
+  const description = carDescription(car, locale) || name;
 
   return {
     '@context': 'https://schema.org',
@@ -84,7 +81,7 @@ export function vehicleSchema(car: Car, locale: Locale) {
     color: car.color || undefined,
     numberOfDoors: car.doors || undefined,
     vehicleSeatingCapacity: car.seats || undefined,
-    image: (car.images ?? []).map(carImageUrl),
+    image: (car.images ?? []).map((p) => absoluteCarImageUrl(p, SITE.url)),
     offers: {
       '@type': 'Offer',
       price: car.price_eur,

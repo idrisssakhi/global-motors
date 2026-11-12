@@ -45,6 +45,19 @@ const VAT_RATE = 0.2;
 const roundEuro = (n: number) => Math.round(n);
 
 /** Trimmed string from FormData, or null when empty. */
+/** title_en / description_en, only when filled now or before (columns may not exist yet). */
+function englishFields(
+  fd: FormData,
+  initial: Partial<CarInput> | undefined
+): Pick<CarInput, 'title_en' | 'description_en'> {
+  const out: Pick<CarInput, 'title_en' | 'description_en'> = {};
+  const title = textOrNull(fd, 'title_en');
+  const description = textOrNull(fd, 'description_en');
+  if (title || initial?.title_en) out.title_en = title;
+  if (description || initial?.description_en) out.description_en = description;
+  return out;
+}
+
 function textOrNull(fd: FormData, name: string): string | null {
   return String(fd.get(name) ?? '').trim() || null;
 }
@@ -187,6 +200,9 @@ export function CarForm({
       title_ar: textOrNull(fd, 'title_ar'),
       description_fr: textOrNull(fd, 'description_fr'),
       description_ar: textOrNull(fd, 'description_ar'),
+      // English columns come from migration 20261112120000: only sent when
+      // used, so the form keeps working on a database without them.
+      ...englishFields(fd, initial),
       images,
       video_url: textOrNull(fd, 'video_url'),
       featured: fd.get('featured') === 'on',
@@ -317,6 +333,18 @@ export function CarForm({
               defaultValue={initial?.title_fr ?? ''}
               className={field}
               placeholder="Mercedes Classe A 200 AMG Line"
+            />
+          </div>
+          <div className="sm:col-span-2 lg:col-span-1">
+            <label className={label} htmlFor="title_en">
+              Title (EN) <span className="font-normal text-muted">— facultatif, sinon titre FR</span>
+            </label>
+            <input
+              id="title_en"
+              name="title_en"
+              defaultValue={initial?.title_en ?? ''}
+              className={field}
+              placeholder="Mercedes A-Class 200 AMG Line"
             />
           </div>
           <div dir="rtl" className="sm:col-span-2">
@@ -609,6 +637,18 @@ export function CarForm({
               rows={6}
               defaultValue={initial?.description_ar ?? ''}
               className={`${field} font-[family-name:var(--font-cairo)]`}
+            />
+          </div>
+          <div className="lg:col-span-2">
+            <label className={label} htmlFor="description_en">
+              Description (EN) <span className="font-normal text-muted">— facultatif, sinon description FR</span>
+            </label>
+            <textarea
+              id="description_en"
+              name="description_en"
+              rows={4}
+              defaultValue={initial?.description_en ?? ''}
+              className={field}
             />
           </div>
         </div>

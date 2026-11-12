@@ -14,6 +14,7 @@ import { MotionToggle } from './MotionToggle';
 const links = [
   { href: '/voitures', key: 'cars' },
   { href: '/simulateur-dedouanement', key: 'simulator' },
+  { href: '/blog', key: 'blog' },
   { href: '/a-propos', key: 'about' },
   { href: '/contact', key: 'contact' },
 ] as const;
@@ -134,14 +135,13 @@ export function Header() {
           {SITE.phone && (
             <a
               href={SITE.phoneHref}
-              className="hidden items-center gap-2 text-sm font-medium text-ink/85 transition-colors hover:text-accent xl:inline-flex"
+              className="hidden items-center gap-2 text-sm font-medium text-ink/85 transition-colors hover:text-accent 2xl:inline-flex"
               aria-label={`${t('call')} ${SITE.phone}`}
             >
               <Phone className="h-4 w-4 text-accent" aria-hidden />
               <span dir="ltr">{SITE.phone}</span>
             </a>
           )}
-          <MotionToggle />
           <LanguageSwitcher />
           <Link href="/simulateur-dedouanement" className="btn-primary !px-5 !py-2.5 text-sm">
             <Calculator className="h-4 w-4" aria-hidden />

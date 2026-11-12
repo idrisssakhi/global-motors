@@ -86,7 +86,10 @@ function formatPayloadValue(value: unknown): string {
 
 /** wa.me wants the international number, digits only (no "+" / "00"). */
 function whatsappUrl(phone: string): string {
-  return `https://wa.me/${phone.replace(/\D/g, '').replace(/^00/, '')}`;
+  let digits = phone.replace(/\D/g, '').replace(/^00/, '');
+  // Older leads were typed without a country code: "06…" is a French mobile.
+  if (!phone.trim().startsWith('+') && /^0[1-9]\d{8}$/.test(digits)) digits = `33${digits.slice(1)}`;
+  return `https://wa.me/${digits}`;
 }
 
 export function LeadRow({ lead }: { lead: LeadWithCar }) {

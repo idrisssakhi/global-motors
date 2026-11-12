@@ -10,11 +10,12 @@ import {
   Receipt,
   Ship,
   MessageCircle,
+  Star,
 } from 'lucide-react';
 
 import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
-import { whatsappLink } from '@/lib/site';
+import { SITE, whatsappLink } from '@/lib/site';
 import { pageMeta } from '@/lib/seo';
 import { getCustomsSettings, getFeaturedCars } from '@/lib/cars';
 import { toSummary } from '@/lib/car-filters';
@@ -23,6 +24,7 @@ import { Hero } from '@/components/home/Hero';
 import { BrandMarquee } from '@/components/home/BrandMarquee';
 import { VideoShowcase } from '@/components/home/VideoShowcase';
 import { ProcessRoute } from '@/components/home/ProcessRoute';
+import { Markets } from '@/components/home/Markets';
 import { SectionHeading } from '@/components/SectionHeading';
 import { CarCard } from '@/components/CarCard';
 import { CustomsSimulator } from '@/components/CustomsSimulator';
@@ -70,6 +72,31 @@ export default async function HomePage({
     a: t(`faq${i}A` as 'faq1A'),
   }));
 
+  const tailoredSearch = (
+        <section className="container-x py-24 sm:py-32">
+          <FadeIn>
+            <Link href="/contact" className="group relative block overflow-hidden rounded-3xl border border-white/[0.07]">
+              <AutoplayVideo
+                src="/videos/aston-martin-valour.webm"
+                className="h-[60svh] min-h-[420px] w-full object-cover transition-transform duration-[1.2s] group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-canvas via-canvas/50 to-transparent" aria-hidden />
+              <div className="absolute inset-x-0 bottom-0 flex flex-col gap-6 p-7 sm:p-12 lg:flex-row lg:items-end lg:justify-between">
+                <div className="max-w-2xl">
+                  <span className="eyebrow">{t('searchEyebrow')}</span>
+                  <h2 className="font-display mt-4 text-3xl font-semibold leading-tight text-white sm:text-5xl">{t('searchTitle')}</h2>
+                  <p className="mt-4 text-white/75">{t('searchText')}</p>
+                </div>
+                <span className="btn-primary shrink-0">
+                  <Search className="h-4 w-4" aria-hidden />
+                  {t('searchCta')}
+                </span>
+              </div>
+            </Link>
+          </FadeIn>
+        </section>
+  );
+
   return (
     <>
       <JsonLd data={autoDealerSchema()} />
@@ -78,18 +105,16 @@ export default async function HomePage({
       <Hero />
       <BrandMarquee title={t('marqueeTitle')} />
 
-      {/* Featured stock */}
-      <section className="container-x py-24 sm:py-32">
-        <SectionHeading eyebrow={t('featuredEyebrow')} title={t('featuredTitle')} subtitle={t('featuredSubtitle')}>
-          {cars.length > 0 && (
+      {/* Featured stock. While the stock is empty, the tailored search offer
+          takes this slot instead of an "our stock is coming" placeholder. */}
+      {cars.length > 0 ? (
+        <section className="container-x py-24 sm:py-32">
+          <SectionHeading eyebrow={t('featuredEyebrow')} title={t('featuredTitle')} subtitle={t('featuredSubtitle')}>
             <Link href="/voitures" className="btn-ghost text-sm">
               {t('viewAll')}
               <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
             </Link>
-          )}
-        </SectionHeading>
-
-        {cars.length > 0 ? (
+          </SectionHeading>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {cars.map((car, i) => (
               <FadeIn key={car.id} delay={i * 0.06}>
@@ -97,21 +122,14 @@ export default async function HomePage({
               </FadeIn>
             ))}
           </div>
-        ) : (
-          <FadeIn>
-            <div className="bg-grid relative mt-12 overflow-hidden rounded-3xl border border-white/[0.07] p-10 text-center sm:p-16">
-              <p className="font-display text-2xl font-semibold text-white sm:text-3xl">{t('emptyTitle')}</p>
-              <p className="mx-auto mt-3 max-w-xl text-muted">{t('emptyText')}</p>
-              <Link href="/contact" className="btn-primary mt-8">
-                {t('emptyCta')}
-                <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
-              </Link>
-            </div>
-          </FadeIn>
-        )}
-      </section>
+        </section>
+      ) : (
+        tailoredSearch
+      )}
 
       <ProcessRoute />
+
+      <Markets />
 
       {/* Customs simulator teaser */}
       <section className="relative border-y border-white/[0.06] bg-surface/60 py-24 sm:py-32">
@@ -128,29 +146,8 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* Tailored search */}
-      <section className="container-x py-24 sm:py-32">
-        <FadeIn>
-          <Link href="/contact" className="group relative block overflow-hidden rounded-3xl border border-white/[0.07]">
-            <AutoplayVideo
-              src="/videos/aston-martin-valour.webm"
-              className="h-[60svh] min-h-[420px] w-full object-cover transition-transform duration-[1.2s] group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-canvas via-canvas/50 to-transparent" aria-hidden />
-            <div className="absolute inset-x-0 bottom-0 flex flex-col gap-6 p-7 sm:p-12 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-2xl">
-                <span className="eyebrow">{t('searchEyebrow')}</span>
-                <h2 className="font-display mt-4 text-3xl font-semibold leading-tight text-white sm:text-5xl">{t('searchTitle')}</h2>
-                <p className="mt-4 text-white/75">{t('searchText')}</p>
-              </div>
-              <span className="btn-primary shrink-0">
-                <Search className="h-4 w-4" aria-hidden />
-                {t('searchCta')}
-              </span>
-            </div>
-          </Link>
-        </FadeIn>
-      </section>
+      {/* Tailored search (already shown above when the stock is empty) */}
+      {cars.length > 0 && tailoredSearch}
 
       {/* Why us */}
       <section className="container-x pb-24 sm:pb-32">
@@ -168,12 +165,22 @@ export default async function HomePage({
             </FadeIn>
           ))}
         </div>
+        {SITE.social.google && (
+          <FadeIn className="mt-8 flex justify-center">
+            <a href={SITE.social.google} target="_blank" rel="noopener noreferrer" className="btn-ghost text-sm">
+              <Star className="h-4 w-4 text-accent" aria-hidden />
+              {t('reviewsCta')}
+            </a>
+          </FadeIn>
+        )}
       </section>
 
       {/* FAQ */}
       <section className="container-x pb-24 sm:pb-32">
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-          <SectionHeading eyebrow={t('faqEyebrow')} title={t('faqTitle')} />
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <SectionHeading eyebrow={t('faqEyebrow')} title={t('faqTitle')} />
+          </div>
           <FadeIn>
             <Faq items={faq} />
           </FadeIn>

@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
 import { SITE } from '@/lib/site';
 import { pageMeta } from '@/lib/seo';
-import { getCars, getMakes } from '@/lib/cars';
+import { countSoldCars, getListedCars, getMakes } from '@/lib/cars';
 import { toSummary } from '@/lib/car-filters';
 import { breadcrumbSchema } from '@/lib/structured-data';
 import { CarList } from '@/components/CarList';
@@ -32,7 +32,9 @@ export default async function CarsPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('cars');
-  const [cars, makes] = await Promise.all([getCars(), getMakes()]);
+  // Sold cars are left out of the page (fewer photos, smaller payload) and
+  // paged in from /api/cars/sold only if the visitor asks for them.
+  const [cars, makes, soldTotal] = await Promise.all([getListedCars(), getMakes(), countSoldCars()]);
 
   return (
     <>
@@ -44,7 +46,7 @@ export default async function CarsPage({
       />
       <PageHero eyebrow={t('eyebrow')} title={t('title')} subtitle={t('subtitle')} />
       <div className="container-x py-12">
-        <CarList cars={cars.map(toSummary)} makes={makes} locale={locale as Locale} />
+        <CarList cars={cars.map(toSummary)} makes={makes} soldTotal={soldTotal} locale={locale as Locale} />
       </div>
     </>
   );

@@ -6,6 +6,7 @@ import { SITE, MAPS_URL, whatsappLink } from '@/lib/site';
 import { Logo } from './Logo';
 import { SocialLinks } from './SocialLinks';
 import { CookieSettingsButton } from './CookieConsent';
+import { MotionToggle } from './MotionToggle';
 
 export function Footer() {
   const t = useTranslations();
@@ -14,6 +15,7 @@ export function Footer() {
 
   const explore = [
     { href: '/voitures', label: t('nav.cars') },
+    { href: '/blog', label: t('nav.blog') },
     { href: '/a-propos', label: t('nav.about') },
     { href: '/contact', label: t('nav.contact') },
   ];
@@ -135,10 +137,14 @@ export function Footer() {
                 </li>
               </ul>
             </div>
-            <p>
-              {t('footer.developedBy')}{' '}
-              <span className="font-semibold text-ink/80">{SITE.developer.name}</span>
-            </p>
+            <div className="flex flex-col gap-3 sm:items-end">
+              {/* Pause looping videos/animations (WCAG 2.2.2) — moved here from the header. */}
+              <MotionToggle withLabel />
+              <p>
+                {t('footer.developedBy')}{' '}
+                <span className="font-semibold text-ink/80">{SITE.developer.name}</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>
