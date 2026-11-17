@@ -118,7 +118,7 @@ export function ProcessRoute() {
                 stroke="url(#route-red)"
                 strokeWidth="2.6"
                 strokeLinecap="round"
-                style={{ pathLength: reduce ? 1 : draw }}
+                style={reduce ? { pathLength: 1 } : { pathLength: draw }}
               />
 
               {!reduce && (
