@@ -9,19 +9,20 @@ import { FadeIn } from '@/components/FadeIn';
 
 const MARKETS = [
   { key: 'Fr', flag: '🇫🇷', href: '/voitures', cta: 'marketFrCta' },
+  { key: 'Eu', flag: '🇪🇺', href: '/contact', cta: 'marketEuCta' },
   { key: 'Dz', flag: '🇩🇿', href: '/simulateur-dedouanement', cta: 'marketDzCta' },
   { key: 'Tn', flag: '🇹🇳', href: null, cta: 'marketAskCta' },
   { key: 'Ma', flag: '🇲🇦', href: null, cta: 'marketAskCta' },
 ] as const;
 
-/** France (direct sale), Algeria (core export), Tunisia & Morocco (on request). */
+/** France & Europe (direct sale), Algeria (core export), Tunisia & Morocco (on request). */
 export async function Markets() {
   const t = await getTranslations('home');
 
   return (
     <section className="container-x py-24 sm:py-32">
       <SectionHeading eyebrow={t('marketsEyebrow')} title={t('marketsTitle')} subtitle={t('marketsSubtitle')} />
-      <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {MARKETS.map((m, i) => {
           const title = t(`market${m.key}Title`);
           const wa = m.href ? null : whatsappLink(t('marketAskMsg', { country: title }));

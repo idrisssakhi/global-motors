@@ -14,16 +14,16 @@ export async function GET() {
 
   const body = `# ${SITE.name}
 
-> ${SITE.taglineFr}. ${SITE.legal.name} (${SITE.legal.legalForm}, SIREN ${SITE.legal.siren}) sells recent and premium vehicles in France, handles turnkey export to Algeria (and to Tunisia and Morocco on request) and offers an Algerian customs duty simulator. Site in French (default), Arabic (/ar) and English (/en).
+> ${SITE.taglineFr}. ${SITE.legal.name} (${SITE.legal.legalForm}, SIREN ${SITE.legal.siren}) is a professional car dealer selling recent and premium used vehicles to private and business customers in France and across the European Union, handles turnkey export to Algeria (and to Tunisia and Morocco on request) and offers an Algerian customs duty simulator. Site in French (default), Arabic (/ar) and English (/en).
 
 - Address: ${SITE.address.street}, ${SITE.address.postalCode} ${SITE.address.city}, ${SITE.address.country}
 ${SITE.phone ? `- Phone / WhatsApp: ${SITE.phone}\n` : ''}${SITE.email ? `- E-mail: ${SITE.email}\n` : ''}- Service areas: ${SITE.serviceAreas.join(', ')}
 
 ## Main pages
 
-- [Vehicles for sale](${base}/voitures): current inventory with prices (EUR, VAT included unless marked HT)
+- [Vehicles for sale](${base}/voitures): current inventory with prices (EUR, VAT included unless marked HT); sold vehicles at ${base}/voitures#vendus
 - [Algeria customs simulator](${base}/simulateur-dedouanement): indicative estimate of Algerian customs duties and taxes (not an official quote)
-- [Import guides](${base}/blog): Algerian import rules 2026, under-3-year imports, port restrictions, export checks
+- [Guides](${base}/blog): buying a used car in France, EU delivery and VAT, Algerian import rules 2026, export checks
 - [About](${base}/a-propos)
 - [Contact](${base}/contact)
 - [Arabic version](${base}/ar)

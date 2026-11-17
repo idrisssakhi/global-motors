@@ -26,5 +26,5 @@ export interface PostMeta {
   /** ISO date of the last factual review. */
   updated: string;
   /** Market the guide is about (for the card label). */
-  market: 'dz' | 'tn-ma' | 'all';
+  market: 'dz' | 'tn-ma' | 'fr-eu' | 'all';
 }

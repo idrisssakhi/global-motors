@@ -9,7 +9,7 @@ import type { Locale } from '@/i18n/routing';
 import { filterCars, type CarSummary } from '@/lib/car-filters';
 import { CarCard } from '@/components/CarCard';
 import { CarFilters } from '@/components/CarFilters';
-import { SoldCars } from '@/components/SoldCars';
+import { SOLD_ANCHOR, SoldCars } from '@/components/SoldCars';
 
 type Params = Record<string, string | undefined>;
 
@@ -79,9 +79,15 @@ export function CarList({
 
       {/* h2 keeps the outline h1 → h2 → h3 (card titles); live so filter
           results are announced (WCAG 4.1.3). */}
-      <h2 className="mt-8 text-sm font-medium text-muted" aria-live="polite">
-        {t(count === 1 ? 'resultsOne' : 'resultsOther', { count })}
-      </h2>
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+        <h2 className="text-sm font-medium text-muted" aria-live="polite">
+          {t(count === 1 ? 'resultsOne' : 'resultsOther', { count })}
+        </h2>
+        <a href={`#${SOLD_ANCHOR}`} className="btn-ghost !px-4 !py-2 text-sm">
+          {t('soldShow')}
+          {soldTotal > 0 ? ` (${soldTotal})` : ''}
+        </a>
+      </div>
 
       {count > 0 ? (
         <motion.div layout className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -109,7 +115,8 @@ export function CarList({
         </div>
       )}
 
-      {soldTotal > 0 && <SoldCars key={soldQuery} query={soldQuery} locale={locale} />}
+      {/* Always rendered: the ISR count can lag behind the admin. */}
+      <SoldCars key={soldQuery} query={soldQuery} locale={locale} total={soldTotal} />
     </>
   );
 }

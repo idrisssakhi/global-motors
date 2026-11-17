@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, X, Calculator, Phone } from 'lucide-react';
+import { Menu, X, CarFront, Phone } from 'lucide-react';
 
 import { Link, usePathname } from '@/i18n/navigation';
 import { SITE } from '@/lib/site';
@@ -143,8 +143,8 @@ export function Header() {
             </a>
           )}
           <LanguageSwitcher />
-          <Link href="/simulateur-dedouanement" className="btn-primary !px-5 !py-2.5 text-sm">
-            <Calculator className="h-4 w-4" aria-hidden />
+          <Link href="/voitures" className="btn-primary !px-5 !py-2.5 text-sm">
+            <CarFront className="h-4 w-4" aria-hidden />
             {t('cta')}
           </Link>
         </div>
@@ -200,11 +200,11 @@ export function Header() {
               <MotionToggle />
               <LanguageSwitcher />
               <Link
-                href="/simulateur-dedouanement"
+                href="/voitures"
                 onClick={() => setOpen(false)}
                 className="btn-primary flex-1 !py-3 text-sm"
               >
-                <Calculator className="h-4 w-4" aria-hidden />
+                <CarFront className="h-4 w-4" aria-hidden />
                 {t('cta')}
               </Link>
             </div>

@@ -7,9 +7,9 @@
 export const SITE = {
   name: 'SKH Global Motors',
   legalName: 'SKH GLOBAL MOTORS',
-  taglineFr: 'Véhicules d’exception en France & export vers l’Algérie',
-  taglineAr: 'سيارات مميزة في فرنسا والتصدير إلى الجزائر',
-  taglineEn: 'Premium cars in France & export to Algeria, Tunisia and Morocco',
+  taglineFr: 'Vente de véhicules récents et premium en France, en Europe & export vers le Maghreb',
+  taglineAr: 'بيع سيارات حديثة وفاخرة في فرنسا وأوروبا والتصدير إلى المغرب العربي',
+  taglineEn: 'Recent & premium cars for sale in France, Europe & export to the Maghreb',
 
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://skh-global-motors.fr',
 
@@ -39,9 +39,9 @@ export const SITE = {
     foundingDate: '2025-09-09',
     president: 'HOLDING SKH',
     rcs: 'RCS Pontoise 991 121 880',
-    capital: '', // TODO: montant du capital social, ex. '1 000 €' (obligatoire, LCEN art. 1-1)
+    capital: '1 000 €',
     /** Natural person responsible for the content (LCEN) — usually HOLDING SKH's legal representative. */
-    publicationDirector: '', // TODO: 'Prénom Nom, représentant légal de HOLDING SKH'
+    publicationDirector: 'Idris Sakhi',
     /**
      * Consumer mediator (Code de la consommation L612-1) — mandatory for any
      * professional selling to consumers. Leave empty until a membership is signed.
@@ -82,7 +82,7 @@ export const SITE = {
     google: 'https://share.google/6tL8FzaoFelJ3KVvT',
   },
 
-  serviceAreas: ['France', 'Algérie / Algeria', 'Tunisie / Tunisia', 'Maroc / Morocco', 'Europe'],
+  serviceAreas: ['France', 'Europe', 'Belgique / Belgium', 'Allemagne / Germany', 'Espagne / Spain', 'Italie / Italy', 'Pays-Bas / Netherlands', 'Luxembourg', 'Algérie / Algeria', 'Tunisie / Tunisia', 'Maroc / Morocco'],
 
   /**
    * Markets served. Algeria is the core export market (customs simulator);

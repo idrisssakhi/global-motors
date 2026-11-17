@@ -110,10 +110,15 @@ export default async function HomePage({
       {cars.length > 0 ? (
         <section className="container-x py-24 sm:py-32">
           <SectionHeading eyebrow={t('featuredEyebrow')} title={t('featuredTitle')} subtitle={t('featuredSubtitle')}>
-            <Link href="/voitures" className="btn-ghost text-sm">
-              {t('viewAll')}
-              <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
-            </Link>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/voitures" className="btn-ghost text-sm">
+                {t('viewAll')}
+                <ArrowRight className="h-4 w-4 rtl:rotate-180" aria-hidden />
+              </Link>
+              <Link href={{ pathname: '/voitures', hash: 'vendus' }} className="btn-ghost text-sm">
+                {t('soldCta')}
+              </Link>
+            </div>
           </SectionHeading>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {cars.map((car, i) => (

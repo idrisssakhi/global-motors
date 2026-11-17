@@ -6,7 +6,7 @@ import { getPostContent, readingMinutes, type PostMeta } from '@/content/blog';
 import { formatLongDate } from '@/lib/format';
 import type { Locale } from '@/i18n/routing';
 
-const MARKET_FLAG: Record<PostMeta['market'], string> = { dz: '🇩🇿', 'tn-ma': '🇹🇳 🇲🇦', all: '🇫🇷 → 🌍' };
+const MARKET_FLAG: Record<PostMeta['market'], string> = { dz: '🇩🇿', 'tn-ma': '🇹🇳 🇲🇦', 'fr-eu': '🇫🇷 🇪🇺', all: '🇫🇷 → 🌍' };
 
 export async function PostCard({ post, locale }: { post: PostMeta; locale: Locale }) {
   const t = await getTranslations('blog');
