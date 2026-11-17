@@ -7,6 +7,7 @@ import {
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
+  useMotionValue,
   useTransform,
 } from 'framer-motion';
 import { Search, ShieldCheck, Ship, KeyRound } from 'lucide-react';
@@ -29,6 +30,8 @@ export function ProcessRoute() {
 
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 70%', 'end 70%'] });
   const draw = useTransform(scrollYProgress, [0.05, 0.85], [0, 1]);
+  // pathLength only accepts a MotionValue in some framer-motion typings.
+  const drawn = useMotionValue(1);
   const shipDistance = useTransform(draw, (v) => `${v * 100}%`);
 
   useMotionValueEvent(scrollYProgress, 'change', (v) => {
@@ -118,7 +121,7 @@ export function ProcessRoute() {
                 stroke="url(#route-red)"
                 strokeWidth="2.6"
                 strokeLinecap="round"
-                style={reduce ? { pathLength: 1 } : { pathLength: draw }}
+                style={{ pathLength: reduce ? drawn : draw }}
               />
 
               {!reduce && (
