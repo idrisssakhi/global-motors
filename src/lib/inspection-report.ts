@@ -7,6 +7,7 @@
  * - Macadam appraisal ("AppraisalPdf", photos linked to their originals)
  * - Macadam "Rapport d'évaluation" (Leasys…)
  * - Openlane "CarReport"
+ * - DEKRA Automotive Solutions "Rapport d'évaluation" (Arval…)
  *
  * Parsing happens client-side on purpose — reports weigh 5–15 MB, well above
  * server-action / serverless body limits, and photos go straight to Storage.
@@ -56,6 +57,8 @@ type PhotoSpec = {
   section: ReportPhoto['section'];
   caption: string;
   suggested: boolean;
+  /** Drop the image unless it links to an original (skips "no photo" icons). */
+  requireLink?: boolean;
 };
 
 interface LayoutParser {
@@ -805,14 +808,201 @@ function openlane(): LayoutParser {
   };
 }
 
+// ── DEKRA Automotive Solutions "Rapport d'évaluation" ────────────────
+// Three columns of "label  value" under green banners, an uncaptioned
+// thumbnail gallery, then two columns of numbered damage cards
+// (Elément / Position / Dommages / Intensité / Opération) next to their photo.
+// Every photo links to its full-size original on DEKRA's server.
+
+const DEKRA_COLUMNS = [0, 200, 375];
+const DEKRA_HEADER = 740;
+const DEKRA_FOOTER = 50;
+const DEKRA_SECTIONS = new Set([
+  'details vehicule',
+  "details d'evaluation",
+  'autres informations techniques',
+  'options / equipements',
+  'pneumatiques',
+  'dommages',
+]);
+const DEKRA_CARD_LABELS = new Set(['element', 'position', 'dommages', 'intensite', 'operation']);
+// Gallery order: exterior views, then dashboard and cluster.
+const DEKRA_SUGGESTED = 6;
+
+type DekraCard = { y: number; x: number; labelX: number; fields: Map<string, string> };
+
+/** Damage cards of one page column, read top to bottom. */
+function dekraCards(items: Item[]): DekraCard[] {
+  const labels = items.filter((it) => DEKRA_CARD_LABELS.has(norm(it.str)));
+  if (!labels.length) return [];
+  const labelX = Math.min(...labels.map((it) => it.x));
+  // Card numbers sit left of the labels and would break row reading.
+  const body = items.filter((it) => !(it.x < labelX - 1 && /^\d+$/.test(it.str)));
+
+  const cards: DekraCard[] = [];
+  let card: DekraCard | null = null;
+  let last = '';
+  for (const row of toRows(body)) {
+    const key = norm(row[0].str);
+    if (Math.abs(row[0].x - labelX) < 5 && DEKRA_CARD_LABELS.has(key)) {
+      if (key === 'element') {
+        card = { y: row[0].y, x: row[0].x, labelX, fields: new Map() };
+        cards.push(card);
+      }
+      card?.fields.set(key, rowText(row.slice(1)));
+      last = key;
+    } else if (card && last) {
+      // Wrapped value: "Acceptable (Pour" / "mémoire)".
+      card.fields.set(last, `${card.fields.get(last) ?? ''} ${rowText(row)}`.trim());
+    }
+  }
+  return cards;
+}
+
+function dekraDamage(card: DekraCard): ReportDamage {
+  const get = (k: string) => {
+    const v = card.fields.get(k)?.trim();
+    return v && v !== '-' ? v : '';
+  };
+  const part = [get('element'), get('position').toLowerCase()].filter(Boolean).join(' ');
+  const what = [get('dommages'), get('intensite').toLowerCase()].filter(Boolean).join(', ');
+  return {
+    group: get('operation') || 'Dommages',
+    label: what ? `${part} : ${what}` : part,
+  };
+}
+
+function dekra(): LayoutParser {
+  const fields = new Map<string, string>();
+  const damages: ReportDamage[] = [];
+  let section = '';
+  let equipmentText = '';
+  let otherText = '';
+  let galleryCount = 0;
+
+  return {
+    page({ items: all, images }) {
+      const items = all.filter((it) => it.y > DEKRA_FOOTER && it.y < DEKRA_HEADER);
+      const pageStartSection = section;
+      const sectionStarts: { y: number; name: string }[] = [];
+      const damageItems: Item[] = [];
+
+      for (const row of toRows(items)) {
+        const text = rowText(row);
+        const key = norm(text);
+        if (row.length === 1 && row[0].x < 45 && DEKRA_SECTIONS.has(key)) {
+          section = key;
+          sectionStarts.push({ y: row[0].y, name: key });
+        } else if (section === 'dommages') {
+          damageItems.push(...row);
+        } else if (section === 'details vehicule' || section === "details d'evaluation") {
+          collectFields(row, DEKRA_COLUMNS, fields);
+        } else if (section === 'options / equipements') {
+          equipmentText += ` ${text}`;
+        } else if (section === 'autres informations techniques') {
+          otherText += ` ${text}`;
+        }
+      }
+
+      // Damage cards come in two columns; list them in reading order.
+      const mid = 297;
+      const cards = [
+        ...dekraCards(damageItems.filter((it) => it.x < mid)),
+        ...dekraCards(damageItems.filter((it) => it.x >= mid)),
+      ].sort((a, b) => b.y - a.y || a.x - b.x);
+      damages.push(...cards.map(dekraDamage));
+
+      const sectionAt = (y: number) => {
+        const above = sectionStarts.filter((s) => s.y > y);
+        return above.length ? above.reduce((a, b) => (b.y < a.y ? b : a)).name : pageStartSection;
+      };
+
+      const photos: PhotoSpec[] = [];
+      for (const image of images) {
+        if (image.y + image.h / 2 > DEKRA_HEADER) continue; // DEKRA / client logos
+        const imageSection = sectionAt(image.y + image.h);
+        if (imageSection === "details d'evaluation") {
+          galleryCount++;
+          photos.push({
+            image,
+            section: 'commercial',
+            caption: `Photo ${galleryCount}`,
+            suggested: galleryCount <= DEKRA_SUGGESTED,
+          });
+        } else if (imageSection === 'dommages') {
+          // The card's labels start just right of its photo, top-aligned.
+          const card = cards.find(
+            (c) =>
+              c.labelX > image.x &&
+              c.labelX - image.x < 150 &&
+              c.y >= image.y &&
+              c.y <= image.y + image.h + 10
+          );
+          if (!card) continue;
+          photos.push({
+            image,
+            section: 'damage',
+            caption: dekraDamage(card).label,
+            suggested: false,
+            requireLink: true, // cards without photo show a "no photo" icon
+          });
+        }
+      }
+      return photos;
+    },
+
+    finish(fileName) {
+      if (!fields.has('marque')) {
+        throw new Error("Ce PDF ne ressemble pas à un rapport DEKRA (marque introuvable).");
+      }
+      // "Date d'immatriculation" wraps onto two lines, leaving "Date" as label.
+      const firstRegistration = isoDate(fields.get("date d'immatriculation") ?? fields.get('date'));
+      const transmission = fields.get('transmission');
+      const speeds = integer(fields.get('vitesses'));
+      const gearbox = transmission && `${transmission}${speeds ? ` ${speeds}` : ''}`;
+      const metallic = norm(otherText).includes('peinture metal');
+      const color = fields.get('couleur')?.replace(/^-$/, '');
+
+      const car: Partial<CarInput> = {
+        make: brandCase(fields.get('marque')!),
+        // "208-P2-2019" → "208"
+        model: fields.get('modele')?.replace(/-(?:[A-Z]\d+-)?(?:19|20)\d{2}$/i, ''),
+        year: yearOf(firstRegistration),
+        first_registration: firstRegistration,
+        immatriculation: fields.get('immatriculation') || null,
+        mileage_km: integer(fields.get('kilometrage')) ?? undefined,
+        fuel: toFuel(fields.get('energie')),
+        gearbox: toGearbox(gearbox || undefined),
+        engine_cc: integer(fields.get('cylindree')),
+        doors: integer(fields.get('portes')),
+        seats: integer(fields.get('nb de places')),
+        color: color ? `${color}${metallic ? ' métallisé' : ''}` : null,
+      };
+      return {
+        reportNumber: fileName.match(/^(\d{5,})/)?.[1] ?? null,
+        inspectedAt: fields.get("date d'evaluation") ?? null,
+        vin: cleanVin(fields.get('vin')),
+        car: withDescription(
+          car,
+          { fuel: fields.get('energie'), gearbox: gearboxLabel(gearbox || undefined) },
+          equipmentText
+        ),
+        damages,
+      };
+    },
+  };
+}
+
 function detectLayout(firstPage: Item[]): LayoutParser {
   const text = norm(firstPage.map((it) => it.str).join(' | '));
   if (firstPage.some((it) => it.str.startsWith('»'))) return macadamInspection();
   if (text.includes('kilometrage inspection')) return macadamAppraisal();
+  // DEKRA is also titled "Rapport d'évaluation" — check it first.
+  if (text.includes('details vehicule') && text.includes("details d'evaluation")) return dekra();
   if (text.includes("rapport d'evaluation")) return macadamEvaluation();
   if (text.includes('specifications') && text.includes('type de transmission')) return openlane();
   throw new Error(
-    'Format de rapport non reconnu. Formats acceptés : Macadam (inspection, évaluation, appraisal) et Openlane.'
+    'Format de rapport non reconnu. Formats acceptés : Macadam (inspection, évaluation, appraisal), Openlane et DEKRA.'
   );
 }
 
@@ -822,6 +1012,18 @@ function detectLayout(firstPage: Item[]): LayoutParser {
 // and that redirect has no CORS header — so browsers must hit the blob directly.
 const MACADAM_PICTURE = /^https:\/\/www\d*\.macadam\.eu\/picture\/([\w-]+\.jpe?g)/i;
 const MACADAM_BLOB = 'https://macadam.blob.core.windows.net/picturesnext/';
+// DEKRA serves originals without CORS — fetched through our admin-only proxy.
+const DEKRA_PICTURE = /^https:\/\/dis\.dekra-automotivesolutions\.com\/Handlers\/d\.ashx\?/i;
+
+function originalUrl(sourceUrl: string | null): string | null {
+  if (!sourceUrl) return null;
+  const file = sourceUrl.match(MACADAM_PICTURE)?.[1];
+  if (file) return `${MACADAM_BLOB}${file}`;
+  if (DEKRA_PICTURE.test(sourceUrl)) {
+    return `/api/report-photo?u=${encodeURIComponent(sourceUrl)}`;
+  }
+  return null;
+}
 
 /**
  * Download the original JPEG behind a photo's link, or fall back to the copy
@@ -830,10 +1032,10 @@ const MACADAM_BLOB = 'https://macadam.blob.core.windows.net/picturesnext/';
 export async function fetchOriginalPhoto(
   photo: ReportPhoto
 ): Promise<{ blob: Blob; original: boolean }> {
-  const file = photo.sourceUrl?.match(MACADAM_PICTURE)?.[1];
-  if (file) {
+  const url = originalUrl(photo.sourceUrl);
+  if (url) {
     try {
-      const res = await fetch(`${MACADAM_BLOB}${file}`);
+      const res = await fetch(url);
       const blob = res.ok ? await res.blob() : null;
       if (blob?.type.startsWith('image/')) return { blob, original: true };
     } catch {
@@ -911,8 +1113,9 @@ export async function parseInspectionReport(
         links.find(({ rect: [x1, y1, x2, y2] }) => cx >= x1 && cx <= x2 && cy >= y1 && cy <= y2)
           ?.url ?? null;
 
-      for (const { image, ...spec } of specs) {
+      for (const { image, requireLink, ...spec } of specs) {
         const sourceUrl = linkAt(image.x + image.w / 2, image.y + image.h / 2);
+        if (requireLink && !sourceUrl) continue;
         // The large cover photo and its thumbnail link to the same original.
         if (sourceUrl && seenUrls.has(sourceUrl)) continue;
 
