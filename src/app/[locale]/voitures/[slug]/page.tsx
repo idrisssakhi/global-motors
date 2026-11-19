@@ -228,14 +228,18 @@ export default async function CarDetailPage({
                 {car.vat_recoverable && car.price_ht != null && (
                   <div className="flex items-baseline justify-between gap-3">
                     <span className="text-sm text-muted">{t('priceHT')}</span>
-                    <span className="font-display text-xl font-semibold text-emerald-300">{formatPrice(car.price_ht, loc)}</span>
+                    <span className="font-display text-3xl font-semibold text-emerald-300">{formatPrice(car.price_ht, loc)}</span>
                   </div>
                 )}
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="text-sm text-muted">
                     {t('priceTTC')} · {car.vat_recoverable ? t('vatRecoverable') : t('vatNotRecoverable')}
                   </span>
-                  <span className="font-display text-3xl font-semibold text-white">{formatPrice(car.price_eur, loc)}</span>
+                  <span
+                    className={`font-display font-semibold ${car.vat_recoverable && car.price_ht != null ? 'text-lg text-white/80' : 'text-3xl text-white'}`}
+                  >
+                    {formatPrice(car.price_eur, loc)}
+                  </span>
                 </div>
               </div>
 

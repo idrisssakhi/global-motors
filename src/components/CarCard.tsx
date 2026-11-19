@@ -103,20 +103,25 @@ export function CarCard({
 
         <div className="mt-auto flex items-end justify-between gap-3 border-t border-white/[0.07] pt-4">
           <div className="min-w-0">
-            <span className="font-display text-2xl font-semibold text-white">{formatPrice(car.price_eur, locale)}</span>
-            <span className="block text-[11px] text-muted">
-              {t('car.priceTTC')}
-              {car.vat_recoverable && car.price_ht != null ? (
-                <>
-                  {' · '}
-                  <span className="font-medium text-emerald-300">
-                    {formatPrice(car.price_ht, locale)} {t('car.priceHT')}
-                  </span>
-                </>
-              ) : car.vat_recoverable ? (
-                ` · ${t('car.vatRecoverable')}`
-              ) : null}
-            </span>
+            {car.vat_recoverable && car.price_ht != null ? (
+              <>
+                <span className="font-display text-2xl font-semibold text-emerald-300">
+                  {formatPrice(car.price_ht, locale)}{' '}
+                  <span className="text-sm font-medium">{t('car.priceHT')}</span>
+                </span>
+                <span className="block text-[11px] text-muted">
+                  {formatPrice(car.price_eur, locale)} {t('car.priceTTC')}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="font-display text-2xl font-semibold text-white">{formatPrice(car.price_eur, locale)}</span>
+                <span className="block text-[11px] text-muted">
+                  {t('car.priceTTC')}
+                  {car.vat_recoverable ? ` · ${t('car.vatRecoverable')}` : null}
+                </span>
+              </>
+            )}
           </div>
           <span className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-accent transition-colors group-hover:text-white">
             {t('car.view')}
