@@ -217,7 +217,11 @@
     },
     "deliveredNote": "Prix export + transport et assurance ({freight}) + droits et taxes estimés. Indicatif, confirmé par un conseiller.",
     "deliveredDetail": "Voir le détail",
-    "view": "Voir"
+    "view": "Voir",
+    "downloadPhotos": "Télécharger les photos",
+    "downloadPhotosCount": "{count} photos · ZIP",
+    "downloadReport": "Fiche PDF",
+    "downloadReportHint": "Fiche détaillée à partager"
   },
   "status": {
     "disponible": "Disponible",
@@ -498,5 +502,23 @@
     "ctaText": "Un conseiller vérifie votre éligibilité et estime le coût total avant l’achat.",
     "ctaButton": "Parler à un conseiller",
     "toc": "Sommaire"
+  },
+  "report": {
+    "title": "Fiche véhicule",
+    "reference": "Réf.",
+    "issued": "Éditée le {date}",
+    "price": "Prix",
+    "keyFacts": "Caractéristiques",
+    "contactTitle": "Réserver ou visiter ce véhicule",
+    "contactText": "Un conseiller vous répond rapidement : photos supplémentaires, vidéo, prix export ou réservation.",
+    "phone": "Téléphone",
+    "email": "E-mail",
+    "address": "Adresse",
+    "online": "Annonce en ligne",
+    "photos": "Photos",
+    "photoCount": "{count} photos",
+    "disclaimer": "Document non contractuel, établi à titre informatif. Prix et disponibilité sous réserve de vente. Les estimations de dédouanement sont indicatives et doivent être confirmées par un conseiller.",
+    "page": "Page {page}/{total}",
+    "approx": "env."
   }
 }

@@ -17,6 +17,8 @@ import {
   Users,
   Zap,
   Cylinder,
+  FileText,
+  Images,
 } from 'lucide-react';
 
 import { Link } from '@/i18n/navigation';
@@ -25,8 +27,9 @@ import { SITE, whatsappLink } from '@/lib/site';
 import { pageMeta, videoEmbed } from '@/lib/seo';
 import { getAllSlugs, getCarBySlug, getCustomsSettings, getRelatedCars } from '@/lib/cars';
 import { toSummary } from '@/lib/car-filters';
-import { computeCustoms, toCustomsFuel, type AgeBracket, type CustomsRegime } from '@/lib/customs';
-import { carAgeYears, dzRoutes } from '@/lib/eligibility';
+import { toCustomsFuel } from '@/lib/customs';
+import { dzRoutes } from '@/lib/eligibility';
+import { ageBracketOf, deliveredEstimates, exportPriceOf } from '@/lib/car-estimates';
 import { carDescription, carTitle } from '@/lib/car-i18n';
 import { DzBadges } from '@/components/DzBadges';
 import { formatDate, formatDzd, formatNumber, formatPrice } from '@/lib/format';
@@ -89,32 +92,9 @@ export default async function CarDetailPage({
   const description = carDescription(car, loc);
   const sold = car.status === 'vendu';
   const routes = dzRoutes(car, customs.ccr_max_cc, customs.ccr_max_age_years);
-  const years = carAgeYears(car);
-  const ageBracket: AgeBracket =
-    years == null ? 3 : car.mileage_km < 100 && !car.first_registration ? 0 : (Math.min(5, Math.max(1, Math.ceil(years))) as AgeBracket);
-  const exportPrice = car.vat_recoverable && car.price_ht ? car.price_ht : car.price_eur;
+  const ageBracket = ageBracketOf(car);
   // "Delivered to Algeria" estimate for each route the car qualifies for.
-  const estimates = sold
-    ? []
-    : (['res3', 'ccr5'] as const)
-        .filter((r) => routes.includes(r))
-        .map((r) => {
-          const regime: CustomsRegime = r === 'res3' ? 'standard' : 'ccr';
-          const res = computeCustoms(
-            {
-              regime,
-              fuel: toCustomsFuel(car.fuel),
-              age: ageBracket,
-              engineCc: car.engine_cc ?? 1400,
-              priceEur: exportPrice,
-              freightEur: customs.default_freight_eur,
-              insuranceEur: customs.default_insurance_eur,
-              exchangeRate: customs.exchange_rate_dzd,
-            },
-            customs
-          );
-          return { route: r, totalEur: res.totalEur, totalDzd: res.totalDzd };
-        });
+  const estimates = deliveredEstimates(car, customs);
   const wa = whatsappLink(t('whatsappMsg', { car: `${car.make} ${car.model}`, year: car.year }));
   const video = car.video_url ? videoEmbed(car.video_url) : null;
 
@@ -154,6 +134,32 @@ export default async function CarDetailPage({
         <div className="mt-6 grid gap-x-10 gap-y-10 lg:grid-cols-[1.45fr_1fr] lg:items-start">
           <div className="order-1 min-w-0 animate-fade-up lg:order-none lg:col-start-1 lg:row-start-1">
             <CarGallery images={car.images} alt={title} sold={sold} />
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              {car.images.length > 0 && (
+                <a
+                  href={`/api/cars/${car.slug}/photos`}
+                  download
+                  className="group flex min-w-0 items-center gap-3 rounded-2xl border border-white/[0.08] bg-surface px-4 py-3 transition-colors hover:border-accent/40"
+                >
+                  <Images className="h-5 w-5 shrink-0 text-accent" aria-hidden />
+                  <span className="min-w-0">
+                    <span className="block truncate text-sm font-semibold text-white">{t('downloadPhotos')}</span>
+                    <span className="block truncate text-xs text-muted">{t('downloadPhotosCount', { count: car.images.length })}</span>
+                  </span>
+                </a>
+              )}
+              <a
+                href={`/api/cars/${car.slug}/report?lang=${loc}`}
+                download
+                className={`group flex min-w-0 items-center gap-3 rounded-2xl border border-white/[0.08] bg-surface px-4 py-3 transition-colors hover:border-accent/40 ${car.images.length > 0 ? '' : 'col-span-2'}`}
+              >
+                <FileText className="h-5 w-5 shrink-0 text-accent" aria-hidden />
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-semibold text-white">{t('downloadReport')}</span>
+                  <span className="block truncate text-xs text-muted">{t('downloadReportHint')}</span>
+                </span>
+              </a>
+            </div>
           </div>
 
           <div className="order-3 min-w-0 space-y-10 lg:order-none lg:col-start-1 lg:row-start-2">
@@ -322,7 +328,7 @@ export default async function CarDetailPage({
                   regime: routes.includes('res3') || !routes.includes('ccr5') ? 'standard' : 'ccr',
                   age: ageBracket,
                   engineCc: car.engine_cc ?? 1400,
-                  priceEur: car.vat_recoverable && car.price_ht ? car.price_ht : car.price_eur,
+                  priceEur: exportPriceOf(car),
                 }}
               />
             </FadeIn>

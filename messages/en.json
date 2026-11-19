@@ -217,7 +217,11 @@
     },
     "deliveredNote": "Export price + shipping and insurance ({freight}) + estimated duties and taxes. Indicative, confirmed by an advisor.",
     "deliveredDetail": "View breakdown",
-    "view": "View"
+    "view": "View",
+    "downloadPhotos": "Download photos",
+    "downloadPhotosCount": "{count} photos · ZIP",
+    "downloadReport": "PDF report",
+    "downloadReportHint": "Detailed sheet to share"
   },
   "status": {
     "disponible": "Available",
@@ -498,5 +502,23 @@
     "ctaText": "An advisor checks your eligibility and estimates the total cost before you buy.",
     "ctaButton": "Talk to an advisor",
     "toc": "Contents"
+  },
+  "report": {
+    "title": "Vehicle report",
+    "reference": "Ref.",
+    "issued": "Issued on {date}",
+    "price": "Price",
+    "keyFacts": "Specifications",
+    "contactTitle": "Reserve or view this vehicle",
+    "contactText": "An advisor will reply quickly: more photos, a video, the export price or a reservation.",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "online": "Online listing",
+    "photos": "Photos",
+    "photoCount": "{count} photos",
+    "disclaimer": "Non-contractual document, provided for information only. Price and availability subject to prior sale. Customs estimates are indicative and must be confirmed by an advisor.",
+    "page": "Page {page}/{total}",
+    "approx": "approx."
   }
 }
