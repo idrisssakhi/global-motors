@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { ArrowUpRight, Gauge, Calendar, Fuel, Cog, Ship } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 import { Link } from '@/i18n/navigation';
 import type { CarSummary } from '@/lib/car-filters';
@@ -70,28 +70,11 @@ export function CarCard({
           </div>
         )}
 
-        <div className="absolute start-3 top-3 flex flex-wrap gap-2">
-          {car.status === 'reserve' && (
-            <span className="rounded-full bg-amber-500/90 px-2.5 py-1 text-xs font-semibold text-black">{t('status.reserve')}</span>
-          )}
-          {car.export_dz && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-black/55 px-2.5 py-1 text-xs font-medium text-white backdrop-blur">
-              <Ship className="h-3 w-3 text-accent" aria-hidden />
-              <span aria-hidden>DZ</span>
-              <span className="sr-only">{t('car.exportEligible')}</span>
-            </span>
-          )}
-        </div>
-
-        {car.vat_recoverable && car.price_ht != null && (
-          <span className="absolute end-3 top-3 rounded-full bg-emerald-500/90 px-2.5 py-1 text-xs font-bold text-black">
-            {formatPrice(car.price_ht, locale)} {t('car.priceHT')}
-          </span>
+        {car.status === 'reserve' && (
+          <div className="absolute inset-x-0 top-0 bg-amber-500/90 py-1.5 text-center text-xs font-semibold uppercase tracking-[0.2em] text-black backdrop-blur">
+            {t('status.reserve')}
+          </div>
         )}
-
-        <span className="absolute bottom-3 end-3 grid h-10 w-10 translate-y-2 place-items-center rounded-full bg-accent-600 text-white opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-          <ArrowUpRight className="h-5 w-5 rtl:-scale-x-100" aria-hidden />
-        </span>
       </div>
 
       <div className="flex flex-1 flex-col p-5">
@@ -100,33 +83,48 @@ export function CarCard({
         {car.version && <p className="mt-0.5 truncate text-sm text-muted">{car.version}</p>}
         {!isSold && <DzBadges routes={car.dzRoutes} className="mt-3" size="sm" />}
 
-        <dl className="mt-4 grid grid-cols-2 gap-x-3 gap-y-2 text-sm text-muted">
-          <Spec icon={Calendar} label={t('car.year')} value={String(car.year)} />
-          <Spec icon={Gauge} label={t('car.mileage')} value={`${formatNumber(car.mileage_km, locale)} ${t('car.km')}`} />
-          <Spec icon={Fuel} label={t('car.fuel')} value={t(`fuel.${car.fuel}`)} />
-          <Spec icon={Cog} label={t('car.gearbox')} value={t(`gearbox.${car.gearbox}`)} />
-        </dl>
+        <ul className="mb-5 mt-4 flex flex-wrap items-center text-sm text-muted">
+          {[
+            String(car.year),
+            `${formatNumber(car.mileage_km, locale)} ${t('car.km')}`,
+            t(`fuel.${car.fuel}`),
+            t(`gearbox.${car.gearbox}`),
+          ].map((v, i) => (
+            <li key={i} className="flex items-center">
+              {i > 0 && (
+                <span className="mx-2 text-white/25" aria-hidden>
+                  ·
+                </span>
+              )}
+              {v}
+            </li>
+          ))}
+        </ul>
 
-        <div className="mt-5 flex items-end justify-between border-t border-white/[0.07] pt-4">
-          <div>
+        <div className="mt-auto flex items-end justify-between gap-3 border-t border-white/[0.07] pt-4">
+          <div className="min-w-0">
             <span className="font-display text-2xl font-semibold text-white">{formatPrice(car.price_eur, locale)}</span>
             <span className="block text-[11px] text-muted">
               {t('car.priceTTC')}
-              {car.vat_recoverable ? ` · ${t('car.vatRecoverable')}` : ''}
+              {car.vat_recoverable && car.price_ht != null ? (
+                <>
+                  {' · '}
+                  <span className="font-medium text-emerald-300">
+                    {formatPrice(car.price_ht, locale)} {t('car.priceHT')}
+                  </span>
+                </>
+              ) : car.vat_recoverable ? (
+                ` · ${t('car.vatRecoverable')}`
+              ) : null}
             </span>
           </div>
+          <span className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-accent transition-colors group-hover:text-white">
+            {t('car.view')}
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5" aria-hidden />
+          </span>
         </div>
       </div>
     </Link>
   );
 }
 
-function Spec({ icon: Icon, label, value }: { icon: typeof Gauge; label: string; value: string }) {
-  return (
-    <div className="flex items-center gap-1.5">
-      <Icon className="h-4 w-4 shrink-0 text-white/35" aria-hidden />
-      <dt className="sr-only">{label}</dt>
-      <dd className="truncate">{value}</dd>
-    </div>
-  );
-}

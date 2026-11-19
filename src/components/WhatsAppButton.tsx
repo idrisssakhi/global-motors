@@ -23,7 +23,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t('whatsappLabel')}
-      className={`group fixed z-40 flex items-center gap-2 rounded-full bg-[#25D366] text-white transition-transform duration-300 hover:scale-105 ${
+      className={`wa-float group fixed z-40 flex items-center gap-2 rounded-full bg-[#25D366] text-white transition-transform duration-300 hover:scale-105 ${
         compact
           ? 'bottom-4 end-4 p-2.5 opacity-90 shadow-lg hover:opacity-100 sm:bottom-6 sm:end-6'
           : 'bottom-5 end-5 p-3.5 shadow-[0_12px_30px_-8px_rgb(37_211_102/0.6)] sm:bottom-6 sm:end-6'

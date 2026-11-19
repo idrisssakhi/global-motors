@@ -162,7 +162,11 @@
     "dzOption": {
       "res3": "Résident · moins de 3 ans",
       "ccr5": "Retour CCR · moins de 5 ans"
-    }
+    },
+    "removeFilter": "Retirer le filtre",
+    "anyBudget": "Budget max · tous",
+    "upTo": "Jusqu’à {price}",
+    "fromYear": "À partir de {year}"
   },
   "car": {
     "priceTTC": "Prix TTC",
@@ -212,7 +216,8 @@
       "ccr5": "Retour CCR · < 5 ans"
     },
     "deliveredNote": "Prix export + transport et assurance ({freight}) + droits et taxes estimés. Indicatif, confirmé par un conseiller.",
-    "deliveredDetail": "Voir le détail"
+    "deliveredDetail": "Voir le détail",
+    "view": "Voir"
   },
   "status": {
     "disponible": "Disponible",

@@ -39,6 +39,7 @@ import { SectionHeading } from '@/components/SectionHeading';
 import { FadeIn } from '@/components/FadeIn';
 import { ConsentEmbed } from '@/components/ConsentEmbed';
 import { JsonLd } from '@/components/JsonLd';
+import { MobileCarBar } from '@/components/MobileCarBar';
 
 export const revalidate = 86400;
 export const dynamicParams = true;
@@ -148,12 +149,14 @@ export default async function CarDetailPage({
           {t('back')}
         </Link>
 
+        {/* Phones: gallery → summary (name, price, contact) → details → lead form.
+            Desktop: gallery and details on the left, sticky aside on the right. */}
         <div className="mt-6 grid gap-x-10 gap-y-10 lg:grid-cols-[1.45fr_1fr] lg:items-start">
-          <div className="min-w-0 space-y-10">
-            <div className="animate-fade-up">
-              <CarGallery images={car.images} alt={title} sold={sold} />
-            </div>
+          <div className="order-1 min-w-0 animate-fade-up lg:order-none lg:col-start-1 lg:row-start-1">
+            <CarGallery images={car.images} alt={title} sold={sold} />
+          </div>
 
+          <div className="order-3 min-w-0 space-y-10 lg:order-none lg:col-start-1 lg:row-start-2">
             {video && (
               <FadeIn>
                 <h2 className="font-display text-xl font-semibold text-white">{t('video')}</h2>
@@ -197,8 +200,12 @@ export default async function CarDetailPage({
             </FadeIn>
           </div>
 
-          <aside className="min-w-0 space-y-6 lg:sticky lg:top-24">
-            <div className="animate-fade-up rounded-3xl border border-white/[0.08] bg-surface p-6 sm:p-7" style={{ animationDelay: '0.1s' }}>
+          <aside className="contents min-w-0 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:block lg:space-y-6">
+            <div
+              id="car-summary"
+              className="order-2 animate-fade-up rounded-3xl border border-white/[0.08] bg-surface p-6 sm:p-7 lg:order-none"
+              style={{ animationDelay: '0.1s' }}
+            >
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
                 {car.make} · {car.year}
               </p>
@@ -269,7 +276,7 @@ export default async function CarDetailPage({
               )}
             </div>
 
-            <div className="glass rounded-3xl p-6 sm:p-7">
+            <div className="glass order-4 rounded-3xl p-6 sm:p-7 lg:order-none">
               <p className="font-display text-lg font-semibold text-white">{sold ? t('soldTitle') : t('interested')}</p>
               <p className="mt-1 text-sm text-muted">{sold ? t('soldDesc') : t('interestedDesc')}</p>
               <LeadForm
@@ -283,6 +290,19 @@ export default async function CarDetailPage({
           </aside>
         </div>
       </div>
+
+      {!sold && (
+        <MobileCarBar
+          watchId="car-summary"
+          title={title}
+          price={formatPrice(car.price_eur, loc)}
+          priceNote={car.vat_recoverable && car.price_ht != null ? `${formatPrice(car.price_ht, loc)} ${t('priceHT')}` : undefined}
+          whatsappHref={wa}
+          whatsappLabel={t('whatsapp')}
+          phoneHref={SITE.phone ? SITE.phoneHref : null}
+          phoneLabel={t('call')}
+        />
+      )}
 
       {car.export_dz && (
         <section id="douane" className="scroll-mt-24 border-y border-white/[0.06] bg-surface/60 py-20">

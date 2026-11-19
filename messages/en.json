@@ -162,7 +162,11 @@
     "dzOption": {
       "res3": "Resident · under 3 years",
       "ccr5": "CCR return · under 5 years"
-    }
+    },
+    "removeFilter": "Remove filter",
+    "anyBudget": "Max budget · any",
+    "upTo": "Up to {price}",
+    "fromYear": "From {year}"
   },
   "car": {
     "priceTTC": "Price incl. VAT",
@@ -212,7 +216,8 @@
       "ccr5": "CCR return · < 5 years"
     },
     "deliveredNote": "Export price + shipping and insurance ({freight}) + estimated duties and taxes. Indicative, confirmed by an advisor.",
-    "deliveredDetail": "View breakdown"
+    "deliveredDetail": "View breakdown",
+    "view": "View"
   },
   "status": {
     "disponible": "Available",

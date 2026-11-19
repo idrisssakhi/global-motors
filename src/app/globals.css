@@ -206,6 +206,17 @@ html.lenis body {
     cursor: pointer;
   }
 
+  /* Car pages on phones: the sticky price bar takes over from the floating
+     WhatsApp button and needs room under the footer. */
+  @media (width < 64rem) {
+    body:has(.car-bar) {
+      padding-bottom: 5.5rem;
+    }
+    body:has(.car-bar) .wa-float {
+      display: none;
+    }
+  }
+
   /* Film grain overlay */
   .grain::after {
     content: '';
