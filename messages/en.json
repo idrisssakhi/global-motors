@@ -221,7 +221,12 @@
     "downloadPhotos": "Download photos",
     "downloadPhotosCount": "{count} photos · ZIP",
     "downloadReport": "PDF report",
-    "downloadReportHint": "Detailed sheet to share"
+    "downloadReportHint": "Detailed sheet to share",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "download": "Download photo",
+    "fullscreen": "Full screen",
+    "exitFullscreen": "Exit full screen"
   },
   "status": {
     "disponible": "Available",

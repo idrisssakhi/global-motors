@@ -221,7 +221,12 @@
     "downloadPhotos": "تحميل الصور",
     "downloadPhotosCount": "{count} صورة · ZIP",
     "downloadReport": "بطاقة PDF",
-    "downloadReportHint": "بطاقة مفصّلة للمشاركة"
+    "downloadReportHint": "بطاقة مفصّلة للمشاركة",
+    "zoomIn": "تكبير",
+    "zoomOut": "تصغير",
+    "download": "تنزيل الصورة",
+    "fullscreen": "ملء الشاشة",
+    "exitFullscreen": "الخروج من ملء الشاشة"
   },
   "status": {
     "disponible": "متوفرة",

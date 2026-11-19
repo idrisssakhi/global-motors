@@ -221,7 +221,12 @@
     "downloadPhotos": "Télécharger les photos",
     "downloadPhotosCount": "{count} photos · ZIP",
     "downloadReport": "Fiche PDF",
-    "downloadReportHint": "Fiche détaillée à partager"
+    "downloadReportHint": "Fiche détaillée à partager",
+    "zoomIn": "Zoomer",
+    "zoomOut": "Dézoomer",
+    "download": "Télécharger la photo",
+    "fullscreen": "Plein écran",
+    "exitFullscreen": "Quitter le plein écran"
   },
   "status": {
     "disponible": "Disponible",
