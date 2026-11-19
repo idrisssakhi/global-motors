@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Clock, Mail, MapPin, MessageCircle, Navigation, Phone } from 'lucide-react';
+import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 
-import { SITE, MAPS_URL, whatsappLink } from '@/lib/site';
+import { SITE, MAPS_URL, SHOWROOM_ADDRESS, whatsappLink } from '@/lib/site';
 import { pageMeta } from '@/lib/seo';
 import { PageHero } from '@/components/PageHero';
 import { LeadForm } from '@/components/LeadForm';
 import { SocialLinks } from '@/components/SocialLinks';
 import { FadeIn } from '@/components/FadeIn';
 import { ConsentEmbed } from '@/components/ConsentEmbed';
+import { DirectionsButton } from '@/components/DirectionsButton';
 
 export async function generateMetadata({
   params,
@@ -31,14 +32,14 @@ export default async function ContactPage({
   const wa = whatsappLink();
 
   const items = [
-    { icon: MapPin, label: t('address'), value: `${SITE.address.street}, ${SITE.address.postalCode} ${SITE.address.city}`, href: MAPS_URL },
+    { icon: MapPin, label: t('address'), value: SHOWROOM_ADDRESS, href: MAPS_URL },
     SITE.phone && { icon: Phone, label: t('phone'), value: SITE.phone, href: SITE.phoneHref },
     wa && { icon: MessageCircle, label: t('whatsapp'), value: SITE.phone || 'WhatsApp', href: wa },
     SITE.email && { icon: Mail, label: t('email'), value: SITE.email, href: `mailto:${SITE.email}` },
     { icon: Clock, label: t('hours'), value: t('hoursValue'), href: null },
   ].filter(Boolean) as { icon: typeof Phone; label: string; value: string; href: string | null }[];
 
-  const { lat, lng } = SITE.address;
+  const { lat, lng } = SITE.showroom;
   const bbox = [lng - 0.012, lat - 0.006, lng + 0.012, lat + 0.006].join('%2C');
   const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lng}`;
 
@@ -84,14 +85,9 @@ export default async function ContactPage({
                   loading="lazy"
                   className="h-72 w-full"
                   frameClassName="[filter:invert(0.92)_hue-rotate(180deg)_saturate(0.6)_brightness(0.9)]"
-                  overlay={
-                    <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="btn-primary absolute bottom-4 end-4 !px-4 !py-2 text-sm">
-                      <Navigation className="h-4 w-4" aria-hidden />
-                      {t('directions')}
-                    </a>
-                  }
                 />
               </div>
+              <DirectionsButton className="mt-4" />
             </FadeIn>
 
             <FadeIn delay={0.3}>

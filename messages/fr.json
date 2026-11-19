@@ -370,7 +370,7 @@
     "metaTitle": "À propos",
     "eyebrow": "À propos",
     "title": "Un négociant automobile français, tourné vers l’Europe et la Méditerranée.",
-    "lead": "SKH Global Motors est une société française basée à Argenteuil (Val-d’Oise), spécialisée dans l’achat et la revente de véhicules d’occasion récents et premium. Nous vendons à des particuliers et à des professionnels en France et dans toute l’Europe, et exportons vers l’Algérie, la Tunisie et le Maroc.",
+    "lead": "SKH Global Motors est une société française basée dans le Val-d’Oise, avec un showroom à Montmagny, spécialisée dans l’achat et la revente de véhicules d’occasion récents et premium. Nous vendons à des particuliers et à des professionnels en France et dans toute l’Europe, et exportons vers l’Algérie, la Tunisie et le Maroc.",
     "p1": "Nous sommes nés d’un constat simple : importer un véhicule en Algérie reste trop souvent un parcours opaque. Prix, état réel, règles douanières, transport… chaque étape comporte son lot d’incertitudes.",
     "p2": "Notre rôle est de les lever. Nous sélectionnons chaque voiture, vérifions son historique, estimons les droits de douane avant l’achat et organisons l’acheminement jusqu’à Alger.",
     "p3": "Filiale de la Holding SKH, SKH Global Motors s’approvisionne auprès de professionnels de l’automobile en France et en Europe (véhicules de fin de location, de flotte et de démonstration) pour proposer le bon véhicule, au bon prix, à nos clients français et européens.",
@@ -390,14 +390,21 @@
     "eyebrow": "Contact",
     "title": "Parlons de votre prochain véhicule.",
     "subtitle": "Une question, une recherche précise, un projet d’export ? Laissez-nous un message, nous vous répondons rapidement.",
-    "address": "Adresse",
+    "address": "Adresse du showroom",
     "phone": "Téléphone",
     "whatsapp": "WhatsApp",
     "email": "E-mail",
     "hours": "Horaires",
     "hoursValue": "Du lundi au samedi, sur rendez-vous",
     "directions": "Itinéraire",
-    "mapTitle": "Plan d’accès SKH Global Motors"
+    "mapTitle": "Plan d’accès SKH Global Motors",
+    "guideMe": "Guidez-moi vers le showroom",
+    "openWith": "Ouvrir avec",
+    "apps": {
+      "waze": "Waze",
+      "google": "Google Maps",
+      "apple": "Plans (Apple)"
+    }
   },
   "legalPage": {
     "metaTitle": "Mentions légales",
@@ -423,7 +430,8 @@
     "email": "E-mail",
     "director": "Directeur de la publication",
     "dataHostText": "Les données des formulaires sont stockées par {name}, dans l’{location}.",
-    "siren": "SIREN"
+    "siren": "SIREN",
+    "showroom": "Showroom (exposition des véhicules)"
   },
   "footer": {
     "tagline": "Véhicules récents et premium en France, export clé en main vers l’Algérie, la Tunisie et le Maroc.",
@@ -513,7 +521,7 @@
     "contactText": "Un conseiller vous répond rapidement : photos supplémentaires, vidéo, prix export ou réservation.",
     "phone": "Téléphone",
     "email": "E-mail",
-    "address": "Adresse",
+    "address": "Showroom",
     "online": "Annonce en ligne",
     "photos": "Photos",
     "photoCount": "{count} photos",

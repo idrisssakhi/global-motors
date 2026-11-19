@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ArrowRight, Eye, FileCheck2, HeartHandshake } from 'lucide-react';
 
 import { Link } from '@/i18n/navigation';
-import { SITE } from '@/lib/site';
+import { SITE, SHOWROOM_ADDRESS } from '@/lib/site';
 import { pageMeta } from '@/lib/seo';
 import { formatDate } from '@/lib/format';
 import { PageHero } from '@/components/PageHero';
@@ -44,6 +44,7 @@ export default async function AboutPage({
     { label: tl('vat'), value: SITE.legal.vat },
     { label: tl('ape'), value: `${SITE.legal.ape} — ${SITE.legal.apeLabel}` },
     { label: tl('address'), value: `${SITE.address.street}, ${SITE.address.postalCode} ${SITE.address.city}` },
+    { label: tl('showroom'), value: SHOWROOM_ADDRESS },
     { label: tl('president'), value: SITE.legal.president },
     { label: 'Date', value: formatDate(SITE.legal.foundingDate) },
   ];

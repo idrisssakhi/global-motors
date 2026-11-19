@@ -195,7 +195,7 @@ export function CarForm({
       doors: numberOrNull(fd, 'doors'),
       seats: numberOrNull(fd, 'seats'),
       color: textOrNull(fd, 'color'),
-      location: textOrNull(fd, 'location') ?? 'Argenteuil, France',
+      location: textOrNull(fd, 'location') ?? 'Montmagny, France',
       title_fr: textOrNull(fd, 'title_fr'),
       title_ar: textOrNull(fd, 'title_ar'),
       description_fr: textOrNull(fd, 'description_fr'),
@@ -538,7 +538,7 @@ export function CarForm({
             <input
               id="location"
               name="location"
-              defaultValue={initial?.location ?? 'Argenteuil, France'}
+              defaultValue={initial?.location ?? 'Montmagny, France'}
               className={field}
             />
           </div>

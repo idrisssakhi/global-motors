@@ -34,14 +34,14 @@ export function autoDealerSchema() {
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'FR',
-      addressLocality: SITE.address.city,
-      postalCode: SITE.address.postalCode,
-      streetAddress: SITE.address.street,
+      addressLocality: SITE.showroom.city,
+      postalCode: SITE.showroom.postalCode,
+      streetAddress: SITE.showroom.street,
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: SITE.address.lat,
-      longitude: SITE.address.lng,
+      latitude: SITE.showroom.lat,
+      longitude: SITE.showroom.lng,
     },
     sameAs: Object.values(SITE.social).filter(Boolean),
   };

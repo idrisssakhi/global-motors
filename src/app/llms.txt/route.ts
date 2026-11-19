@@ -16,7 +16,8 @@ export async function GET() {
 
 > ${SITE.taglineFr}. ${SITE.legal.name} (${SITE.legal.legalForm}, SIREN ${SITE.legal.siren}) is a professional car dealer selling recent and premium used vehicles to private and business customers in France and across the European Union, handles turnkey export to Algeria (and to Tunisia and Morocco on request) and offers an Algerian customs duty simulator. Site in French (default), Arabic (/ar) and English (/en).
 
-- Address: ${SITE.address.street}, ${SITE.address.postalCode} ${SITE.address.city}, ${SITE.address.country}
+- Showroom (vehicles on display): ${SITE.showroom.street}, ${SITE.showroom.postalCode} ${SITE.showroom.city}, ${SITE.showroom.country}
+- Registered office: ${SITE.address.street}, ${SITE.address.postalCode} ${SITE.address.city}, ${SITE.address.country}
 ${SITE.phone ? `- Phone / WhatsApp: ${SITE.phone}\n` : ''}${SITE.email ? `- E-mail: ${SITE.email}\n` : ''}- Service areas: ${SITE.serviceAreas.join(', ')}
 
 ## Main pages

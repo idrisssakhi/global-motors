@@ -181,8 +181,58 @@ function Lightbox({
     };
   }, []);
 
+  // Click on the photo toggles a 2.5× zoom that follows the pointer; a click on
+  // the black letterbox around it closes the viewer.
+  // Zoom is tied to the photo index, so it resets when the visitor changes photo.
+  const [zoomedPhoto, setZoomedPhoto] = useState<number | null>(null);
+  const zoom = zoomedPhoto === active;
+  const [origin, setOrigin] = useState('50% 50%');
+
+  const onPhotoClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const img = (e.currentTarget.querySelector('img') as HTMLImageElement | null);
+    const box = e.currentTarget.getBoundingClientRect();
+    if (img?.naturalWidth && !zoom) {
+      // Rendered rect of the object-contain image inside the full-screen box.
+      const scale = Math.min(box.width / img.naturalWidth, box.height / img.naturalHeight);
+      const w = img.naturalWidth * scale;
+      const h = img.naturalHeight * scale;
+      const x = e.clientX - box.left - (box.width - w) / 2;
+      const y = e.clientY - box.top - (box.height - h) / 2;
+      if (x < 0 || y < 0 || x > w || y > h) return onClose();
+    }
+    setOrigin(`${((e.clientX - box.left) / box.width) * 100}% ${((e.clientY - box.top) / box.height) * 100}%`);
+    setZoomedPhoto(zoom ? null : active);
+  };
+
   return (
     <>
+      <div
+        className={`absolute inset-0 overflow-hidden ${zoom ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onPhotoClick(e);
+        }}
+        onMouseMove={(e) => {
+          if (!zoom) return;
+          const box = e.currentTarget.getBoundingClientRect();
+          setOrigin(`${((e.clientX - box.left) / box.width) * 100}% ${((e.clientY - box.top) / box.height) * 100}%`);
+        }}
+        onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
+        onTouchEnd={(e) => {
+          if (touchX.current === null || zoom) return;
+          const dx = e.changedTouches[0].clientX - touchX.current;
+          if (Math.abs(dx) > 50) onNav(dx < 0 ? 1 : -1);
+          touchX.current = null;
+        }}
+      >
+        <div
+          className="absolute inset-0 transition-transform duration-300 ease-out"
+          style={{ transform: zoom ? 'scale(2.5)' : 'none', transformOrigin: origin }}
+        >
+          <Image key={active} src={urls[active]} alt={altFor(active)} fill sizes="100vw" quality={75} className="select-none object-contain" draggable={false} priority />
+        </div>
+      </div>
+
       <button ref={closeRef} type="button" onClick={onClose} className={`${btn} end-4 top-4`} aria-label={t('close')}>
         <X className="h-6 w-6" aria-hidden />
       </button>
@@ -194,22 +244,12 @@ function Lightbox({
           <button type="button" onClick={(e) => { e.stopPropagation(); onNav(1); }} className={`${btn} end-3 sm:end-6`} aria-label={labels.next}>
             <ChevronRight className="h-6 w-6 rtl:rotate-180" aria-hidden />
           </button>
+          <p aria-hidden className="pointer-events-none absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-sm font-medium text-white backdrop-blur">
+            {active + 1} / {count}
+          </p>
           <p className="sr-only" aria-live="polite">{labels.photo(active + 1, count)}</p>
         </>
       )}
-      <div
-        className="relative h-full max-h-[85vh] w-full max-w-[92vw]"
-        onClick={(e) => e.stopPropagation()}
-        onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
-        onTouchEnd={(e) => {
-          if (touchX.current === null) return;
-          const dx = e.changedTouches[0].clientX - touchX.current;
-          if (Math.abs(dx) > 50) onNav(dx < 0 ? 1 : -1);
-          touchX.current = null;
-        }}
-      >
-        <Image key={active} src={urls[active]} alt={altFor(active)} fill sizes="92vw" className="object-contain" priority />
-      </div>
     </>
   );
 }

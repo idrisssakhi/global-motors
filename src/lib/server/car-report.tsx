@@ -342,7 +342,7 @@ function CarReport({ car, locale, customs, photos, L }: Props) {
               {SITE.phone && <Contact label={t('report.phone')} value={SITE.phone} href={SITE.phoneHref} rtl={rtl} />}
               {SITE.whatsapp && <Contact label="WhatsApp" value={SITE.phone || `+${SITE.whatsapp}`} href={`https://wa.me/${SITE.whatsapp}`} rtl={rtl} />}
               {SITE.email && <Contact label={t('report.email')} value={SITE.email} href={`mailto:${SITE.email}`} rtl={rtl} />}
-              <Contact label={t('report.address')} value={`${SITE.address.street}, ${SITE.address.postalCode} ${SITE.address.city}`} rtl={rtl} />
+              <Contact label={t('report.address')} value={`${SITE.showroom.street}, ${SITE.showroom.postalCode} ${SITE.showroom.city}`} rtl={rtl} />
               <Contact label={t('report.online')} value={url.replace(/^https?:\/\//, '')} href={url} rtl={rtl} wide />
             </View>
           </View>

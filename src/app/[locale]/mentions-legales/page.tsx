@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { SITE } from '@/lib/site';
+import { SITE, SHOWROOM_ADDRESS } from '@/lib/site';
 import { pageMeta } from '@/lib/seo';
 import { LegalSection as Block, RichText } from '@/components/LegalDocument';
 
@@ -33,6 +33,7 @@ export default async function LegalPage({
     [t('vat'), SITE.legal.vat],
     [t('ape'), `${SITE.legal.ape} — ${SITE.legal.apeLabel}`],
     [t('address'), `${SITE.address.street}, ${SITE.address.postalCode} ${SITE.address.city}, ${SITE.address.country}`],
+    [t('showroom'), `${SHOWROOM_ADDRESS}, ${SITE.showroom.country}`],
     SITE.phone && [t('phone'), SITE.phone],
     SITE.email && [t('email'), SITE.email],
     [t('president'), SITE.legal.president],

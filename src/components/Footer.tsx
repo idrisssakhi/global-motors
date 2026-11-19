@@ -80,9 +80,9 @@ export function Footer() {
               <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="flex items-start gap-2 text-ink/80 hover:text-accent">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
                 <span>
-                  {SITE.address.street}
+                  {SITE.showroom.street}
                   <br />
-                  {SITE.address.postalCode} {SITE.address.city}, {SITE.address.country}
+                  {SITE.showroom.postalCode} {SITE.showroom.city}, {SITE.showroom.country}
                 </span>
               </a>
             </li>

@@ -18,13 +18,22 @@ export const SITE = {
   whatsapp: '33603042648', // digits only, international format, no "+"
   email: 'skh.global.motors@gmail.com',
 
+  /** Registered office (domiciliation) — legal notices only, no vehicles on site. */
   address: {
     street: '7 rue de la Grande Ceinture',
     city: 'Argenteuil',
     postalCode: '95100',
     country: 'France',
-    lat: 48.948911713693,
-    lng: 2.25896764104141,
+  },
+
+  /** Showroom / depot where the vehicles are on display — the address visitors should go to. */
+  showroom: {
+    street: '9 avenue du Général de Gaulle',
+    city: 'Montmagny',
+    postalCode: '95360',
+    country: 'France',
+    lat: 48.974051,
+    lng: 2.348428,
   },
 
   // Official registration data (annuaire-entreprises.data.gouv.fr).
@@ -103,6 +112,8 @@ export const SITE = {
     'décret 23-74 abattement',
     'voiture hors taxe export',
     'TVA récupérable export',
+    'garage automobile Montmagny',
+    'voiture occasion Montmagny',
     'garage automobile Argenteuil',
     'mandataire automobile Val-d’Oise',
     'export voiture Tunisie',
@@ -142,6 +153,14 @@ export function whatsappLink(message?: string): string | null {
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
-export const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  `${SITE.address.street}, ${SITE.address.postalCode} ${SITE.address.city}`
-)}`;
+/** One-line showroom address, e.g. "9 avenue du Général de Gaulle, 95360 Montmagny". */
+export const SHOWROOM_ADDRESS = `${SITE.showroom.street}, ${SITE.showroom.postalCode} ${SITE.showroom.city}`;
+
+export const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SHOWROOM_ADDRESS)}`;
+
+/** Turn-by-turn links to the showroom, one per navigation app. */
+export const DIRECTIONS = {
+  waze: `https://waze.com/ul?ll=${SITE.showroom.lat},${SITE.showroom.lng}&navigate=yes`,
+  google: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(SHOWROOM_ADDRESS)}`,
+  apple: `https://maps.apple.com/?daddr=${encodeURIComponent(SHOWROOM_ADDRESS)}&dirflg=d`,
+} as const;
