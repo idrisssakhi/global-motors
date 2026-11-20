@@ -1,13 +1,23 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Loader2, Upload, X, Save, Calculator, AlertTriangle } from 'lucide-react';
+import {
+  Loader2,
+  Upload,
+  X,
+  Save,
+  Calculator,
+  AlertTriangle,
+  Sparkles,
+  Undo2,
+} from 'lucide-react';
 
 import { createClient } from '@/lib/supabase/client';
 import { carImageUrl } from '@/lib/image';
-import { compressImage, uploadCarImage } from '@/lib/car-images';
+import { compressImage, extensionFor, uploadCarImage } from '@/lib/car-images';
+import type { StageProgress } from '@/lib/showroom/stage';
 import { createCar, updateCar } from '@/app/admin/actions';
 import {
   ageBracketFromDate,
@@ -24,6 +34,21 @@ import {
   type CarInput,
   type FuelType,
 } from '@/lib/types';
+
+const SHOWROOM_PREF_KEY = 'skh-admin-showroom';
+
+/** Lazy so the AI worker code only loads when staging is actually used. */
+async function stage(photo: Blob, onProgress: (p: StageProgress) => void) {
+  const { stageCarPhoto } = await import('@/lib/showroom/stage');
+  return stageCarPhoto(photo, onProgress);
+}
+
+function progressLabel(p: StageProgress, step: string): string {
+  if (p.phase === 'download') {
+    return `Téléchargement du modèle IA (une seule fois)… ${Math.round(p.ratio * 100)} %`;
+  }
+  return p.phase === 'compose' ? `Mise en scène ${step}…` : `Détourage ${step}…`;
+}
 
 const FUEL_LABELS: Record<FuelType, string> = {
   essence: 'Essence',
@@ -85,6 +110,30 @@ export function CarForm({
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [images, setImages] = useState<string[]>(initial?.images ?? []);
+  // Showroom staging: on by default, remembered per browser.
+  const [showroom, setShowroom] = useState(true);
+  const [stageStatus, setStageStatus] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+  const [busyPath, setBusyPath] = useState<string | null>(null);
+  // Staged photo path → its original (storage path, or the blob not uploaded).
+  const [originals, setOriginals] = useState<Record<string, string | Blob>>({});
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(SHOWROOM_PREF_KEY) === 'off') setShowroom(false);
+    } catch {
+      /* storage unavailable */
+    }
+  }, []);
+
+  function toggleShowroom(on: boolean) {
+    setShowroom(on);
+    try {
+      localStorage.setItem(SHOWROOM_PREF_KEY, on ? 'on' : 'off');
+    } catch {
+      /* storage unavailable */
+    }
+  }
 
   // Price fields are controlled so HT and TTC can be derived from each other.
   const [priceTtc, setPriceTtc] = useState(
@@ -148,22 +197,89 @@ export function CarForm({
     if (!files?.length) return;
     setUploading(true);
     setError(null);
+    setNotice(null);
+    const list = Array.from(files);
+    const failed: string[] = [];
     try {
-      const uploaded: string[] = [];
-      for (const file of Array.from(files)) {
+      for (const [i, file] of list.entries()) {
         const { blob, ext } = await compressImage(file);
-        uploaded.push(await uploadCarImage(supabase, blob, ext));
+        let path: string;
+        if (showroom) {
+          const step = list.length > 1 ? `${i + 1}/${list.length}` : '';
+          try {
+            const staged = await stage(blob, (p) => setStageStatus(progressLabel(p, step)));
+            path = await uploadCarImage(supabase, staged, extensionFor(staged));
+            setOriginals((prev) => ({ ...prev, [path]: blob }));
+          } catch {
+            // Staging is best-effort: keep the plain photo.
+            failed.push(file.name);
+            path = await uploadCarImage(supabase, blob, ext);
+          }
+        } else {
+          path = await uploadCarImage(supabase, blob, ext);
+        }
+        // Add photos one by one so progress is visible.
+        setImages((prev) => [...prev, path]);
       }
-      setImages((prev) => [...prev, ...uploaded]);
+      if (failed.length) {
+        setNotice(
+          `Fond showroom impossible pour : ${failed.join(', ')} — photo d'origine conservée.`
+        );
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Échec du téléversement');
     } finally {
       setUploading(false);
+      setStageStatus(null);
+    }
+  }
+
+  /** Stage an already uploaded photo (e.g. one added with the toggle off). */
+  async function applyShowroom(path: string) {
+    setBusyPath(path);
+    setError(null);
+    setNotice(null);
+    try {
+      const res = await fetch(carImageUrl(path));
+      if (!res.ok) throw new Error('Photo introuvable');
+      const staged = await stage(await res.blob(), (p) => setStageStatus(progressLabel(p, '')));
+      const next = await uploadCarImage(supabase, staged, extensionFor(staged));
+      setImages((prev) => prev.map((p) => (p === path ? next : p)));
+      setOriginals((prev) => ({ ...prev, [next]: path }));
+    } catch (e) {
+      setNotice(
+        `Fond showroom impossible : ${e instanceof Error ? e.message : 'erreur inconnue'}`
+      );
+    } finally {
+      setBusyPath(null);
+      setStageStatus(null);
+    }
+  }
+
+  /** Swap a staged photo back to its original. */
+  async function revertShowroom(path: string) {
+    const original = originals[path];
+    if (!original) return;
+    setBusyPath(path);
+    setError(null);
+    try {
+      const restored =
+        typeof original === 'string'
+          ? original
+          : await uploadCarImage(supabase, original, extensionFor(original));
+      setImages((prev) => prev.map((p) => (p === path ? restored : p)));
+      setOriginals(({ [path]: _, ...rest }) => rest);
+      await supabase.storage.from('car-images').remove([path]);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Échec de la restauration');
+    } finally {
+      setBusyPath(null);
     }
   }
 
   async function removeImage(path: string) {
     setImages((prev) => prev.filter((p) => p !== path));
+    setOriginals(({ [path]: _, ...rest }) => rest);
     // best-effort cleanup of the storage object
     await supabase.storage.from('car-images').remove([path]);
   }
@@ -222,6 +338,13 @@ export function CarForm({
       if (!res.ok) {
         setError(res.error ?? 'Une erreur est survenue.');
         return;
+      }
+      // Originals replaced by a showroom version are no longer referenced.
+      const replaced = Object.entries(originals)
+        .filter(([staged, orig]) => images.includes(staged) && typeof orig === 'string')
+        .map(([, orig]) => orig as string);
+      if (replaced.length) {
+        await supabase.storage.from('car-images').remove(replaced);
       }
       router.push('/admin');
       router.refresh();
@@ -682,6 +805,31 @@ export function CarForm({
                     Couverture
                   </span>
                 )}
+                {busyPath === path && (
+                  <div className="absolute inset-0 grid place-items-center bg-black/50">
+                    <Loader2 className="h-6 w-6 animate-spin text-white" aria-hidden />
+                  </div>
+                )}
+                <button
+                  type="button"
+                  disabled={busyPath != null || uploading}
+                  onClick={() =>
+                    originals[path] ? revertShowroom(path) : applyShowroom(path)
+                  }
+                  className="absolute bottom-2 left-2 inline-flex cursor-pointer items-center gap-1 rounded-full bg-black/60 px-2 py-1 text-xs font-medium text-white opacity-100 transition-opacity focus-visible:opacity-100 disabled:cursor-wait sm:opacity-0 sm:group-hover:opacity-100"
+                >
+                  {originals[path] ? (
+                    <>
+                      <Undo2 className="h-3.5 w-3.5" aria-hidden />
+                      Photo d&apos;origine
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-3.5 w-3.5" aria-hidden />
+                      Showroom
+                    </>
+                  )}
+                </button>
                 <button
                   type="button"
                   onClick={() => removeImage(path)}
@@ -693,6 +841,39 @@ export function CarForm({
               </div>
             ))}
           </div>
+        )}
+
+        <label className="mb-3 flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-canvas px-4 py-3">
+          <input
+            type="checkbox"
+            checked={showroom}
+            onChange={(e) => toggleShowroom(e.target.checked)}
+            className="mt-0.5 h-4 w-4 accent-[var(--color-accent-600)]"
+          />
+          <span className="text-sm">
+            <span className="flex items-center gap-1.5 font-medium text-primary">
+              <Sparkles className="h-4 w-4 text-accent" aria-hidden />
+              Fond showroom SKH automatique
+            </span>
+            <span className="text-muted">
+              Détoure la voiture et la place dans le showroom avec le logo.
+              Idéal pour les vues extérieures ; désactivez pour l&apos;intérieur.
+              Chaque photo garde un bouton pour revenir à l&apos;original.
+            </span>
+          </span>
+        </label>
+
+        {stageStatus && (
+          <p className="mb-3 flex items-center gap-2 text-sm text-muted" role="status">
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            {stageStatus}
+          </p>
+        )}
+        {notice && (
+          <p className="mb-3 flex items-start gap-2 rounded-xl bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+            {notice}
+          </p>
         )}
 
         <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-line px-4 py-6 text-sm font-medium text-muted transition-colors hover:border-accent hover:text-primary">
